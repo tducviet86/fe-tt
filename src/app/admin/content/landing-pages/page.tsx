@@ -1,0 +1,1 @@
+import{AdminPlaceholder}from"@/components/admin/placeholder";export default function Page(){return <AdminPlaceholder title="Landing pages" description="Curate indexable SEO landing pages without generating thin filter pages."/>}

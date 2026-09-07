@@ -1,0 +1,1 @@
+import{AdminPlaceholder}from"@/components/admin/placeholder";export default function Page(){return <AdminPlaceholder title="Customers" description="Customer profiles, stays, notes and contact information."/>}

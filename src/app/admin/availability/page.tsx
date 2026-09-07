@@ -1,0 +1,1 @@
+import{AdminPlaceholder}from"@/components/admin/placeholder";export default function Page(){return <AdminPlaceholder title="Availability" description="Review holds, bookings, blocks and maintenance periods."/>}
