@@ -42,6 +42,7 @@ export const unitSchema = z.object({
       }),
     }),
   ),
+  reviews: z.array(z.object({ rating: z.number().int().min(1).max(5) })),
 });
 export type Unit = z.infer<typeof unitSchema>;
 export async function getUnits(filters?: {

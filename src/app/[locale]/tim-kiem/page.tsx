@@ -138,7 +138,13 @@ export default async function SearchPage({
             </div>
           </div>
         </div>
-        <SearchResults units={units} locale={locale} />
+        <SearchResults
+          units={units}
+          locale={locale}
+          checkIn={valid ? checkIn : undefined}
+          checkOut={valid ? checkOut : undefined}
+          guests={guests}
+        />
       </div>
     </main>
   );

@@ -6,9 +6,15 @@ import type { Locale } from "@/lib/i18n/config";
 export function SearchResults({
   units,
   locale,
+  checkIn,
+  checkOut,
+  guests = 2,
 }: {
   units: Unit[];
   locale: Locale;
+  checkIn?: string;
+  checkOut?: string;
+  guests?: number;
 }) {
   const vi = locale === "vi";
   return (
@@ -46,7 +52,7 @@ export function SearchResults({
               hidden: {},
               show: { transition: { staggerChildren: 0.1 } },
             }}
-            className="grid gap-6 md:grid-cols-2"
+            className="mx-auto grid max-w-5xl gap-4"
           >
             {units.map((unit, index) => (
               <motion.div
@@ -67,6 +73,7 @@ export function SearchResults({
                   locale={locale}
                   search
                   index={index}
+                  searchDates={{ checkIn, checkOut, guests }}
                 />
               </motion.div>
             ))}

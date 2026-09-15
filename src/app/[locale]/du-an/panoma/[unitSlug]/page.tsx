@@ -38,10 +38,12 @@ export async function generateMetadata({
 }
 export default async function UnitPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; unitSlug: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }) {
-  const { locale, unitSlug } = await params;
+  const [{ locale, unitSlug }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
   const u = await getUnit(unitSlug);
   if (!u) notFound();
@@ -155,6 +157,10 @@ export default async function UnitPage({
               basePrice={u.basePrice}
               currency={u.currency}
               publicCode={u.publicCode}
+              maxGuests={u.maxGuests}
+              initialCheckIn={query.checkIn}
+              initialCheckOut={query.checkOut}
+              initialGuests={Math.max(1, Number(query.guests) || 2)}
             />
           </aside>
         </div>

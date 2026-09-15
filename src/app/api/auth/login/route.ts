@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { authenticatedResponse } from "@/lib/auth/cookies";
 const input = z.object({ email: z.email(), password: z.string().min(8) });
 const output = z.object({
   success: z.literal(true),
@@ -47,25 +48,7 @@ export async function POST(request: Request) {
         },
         { status: 502 },
       );
-    const response = NextResponse.json({
-      success: true,
-      data: { authenticated: true },
-    });
-    response.cookies.set("access_token", result.data.data.accessToken, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 15 * 60,
-    });
-    response.cookies.set("refresh_token", result.data.data.refreshToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-      path: "/api/auth",
-      expires: new Date(result.data.data.expiresAt),
-    });
-    return response;
+    return authenticatedResponse(result.data.data);
   } catch {
     return NextResponse.json(
       {

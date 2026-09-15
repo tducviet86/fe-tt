@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { z } from "zod";
 const input = z.object({
   publicCode: z.string().min(1),
@@ -7,12 +8,10 @@ const input = z.object({
   checkOut: z.iso.date(),
   guestCount: z.number().int().min(1).max(50),
   source: z.literal("WEBSITE"),
-  firstName: z.string().trim().min(1),
-  lastName: z.string().trim().min(1),
-  email: z.email().optional().or(z.literal("")),
-  phone: z.string().trim().min(8),
 });
 export async function POST(request: Request) {
+  const token = (await cookies()).get("access_token")?.value;
+  if (!token) return NextResponse.json({ success: false, error: { code: "UNAUTHENTICATED", message: "Login required" } }, { status: 401 });
   const parsed = input.safeParse(await request.json());
   if (!parsed.success)
     return NextResponse.json(
@@ -31,11 +30,8 @@ export async function POST(request: Request) {
       `${process.env.API_URL ?? "http://localhost:3000/api/v1"}/bookings`,
       {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          ...parsed.data,
-          email: parsed.data.email || undefined,
-        }),
+        headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+        body: JSON.stringify(parsed.data),
         cache: "no-store",
       },
     );

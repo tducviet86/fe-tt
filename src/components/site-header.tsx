@@ -42,6 +42,7 @@ export function SiteHeader({ locale }: { locale: "vi" | "en" }) {
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            <Link href={`/${locale}/${vi ? "dang-nhap" : "login"}`} className="rounded-full border border-white/20 px-4 py-2 text-xs font-bold hover:border-white/50">{vi ? "Đăng nhập" : "Sign in"}</Link>
             <Link
               href={`/${vi ? "en" : "vi"}`}
               className="px-3 py-2 text-xs font-bold"

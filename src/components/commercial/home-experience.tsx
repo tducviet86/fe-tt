@@ -53,6 +53,7 @@ export function HomeExperience({
             <NavItem icon={<Waves />} label={vi ? "Gần biển" : "By the sea"} />
           </nav>
           <div className="flex items-center gap-2">
+            <Link href={`/${locale}/${vi ? "dang-nhap" : "login"}`} className="rounded-full border border-black/10 px-4 py-2 text-xs font-bold text-[#173f34] hover:bg-black/5">{vi ? "Đăng nhập" : "Sign in"}</Link>
             <Link
               href={`/${vi ? "en" : "vi"}`}
               className="rounded-full px-3 py-2 text-xs font-bold hover:bg-black/5"

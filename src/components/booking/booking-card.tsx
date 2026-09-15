@@ -10,8 +10,10 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { StayLoader } from "@/components/ui/stay-loader";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { quoteSchema, type PriceQuote } from "@/lib/api/pricing";
 const pad = (n: number) => String(n).padStart(2, "0"),
   iso = (d: Date) =>
@@ -35,21 +37,32 @@ export function BookingCard({
   basePrice,
   currency,
   publicCode,
+  maxGuests,
+  initialCheckIn,
+  initialCheckOut,
+  initialGuests = 2,
 }: {
   locale: "vi" | "en";
   basePrice: number;
   currency: string;
   publicCode: string;
+  maxGuests: number;
+  initialCheckIn?: string;
+  initialCheckOut?: string;
+  initialGuests?: number;
 }) {
   const vi = locale === "vi",
+    router = useRouter(),
+    pathname = usePathname(),
+    currentSearch = useSearchParams(),
     [quote, setQuote] = useState<PriceQuote>(),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(false),
-    [bookingLoading, setBookingLoading] = useState(false),
-    [bookingCode, setBookingCode] = useState(""),
-    [guests, setGuests] = useState(2),
-    [start, setStart] = useState(""),
-    [end, setEnd] = useState("");
+    [accountCheck, setAccountCheck] = useState(false),
+    [accountDialog, setAccountDialog] = useState<"login" | "profile" | null>(null),
+    [guests, setGuests] = useState(Math.min(initialGuests, maxGuests)),
+    [start, setStart] = useState(initialCheckIn ?? ""),
+    [end, setEnd] = useState(initialCheckOut ?? "");
   const nights = useMemo(
     () =>
       start && end
@@ -93,43 +106,22 @@ export function BookingCard({
       setLoading(false);
     }
   }
-  async function book(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function continueBooking() {
     if (!quote?.quoteId) return;
-    setBookingLoading(true);
+    setAccountCheck(true);
     setError("");
-    const form = new FormData(event.currentTarget);
     try {
-      const response = await fetch("/api/bookings", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          publicCode,
-          quoteId: quote.quoteId,
-          checkIn: start,
-          checkOut: end,
-          guestCount: guests,
-          source: "WEBSITE",
-          firstName: form.get("firstName"),
-          lastName: form.get("lastName"),
-          email: form.get("email"),
-          phone: form.get("phone"),
-        }),
-      });
-      const body = (await response.json()) as {
-        data?: { bookingCode?: string };
-        error?: { message?: string };
-      };
-      if (!response.ok || !body.data?.bookingCode)
-        throw new Error(
-          body.error?.message ??
-            (vi ? "Chưa thể tạo booking." : "Unable to create booking."),
-        );
-      setBookingCode(body.data.bookingCode);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Request failed");
+      const response = await fetch("/api/auth/session", { cache: "no-store" });
+      if (response.status === 401) return setAccountDialog("login");
+      const body = (await response.json()) as { data?: { profileComplete?: boolean } };
+      if (!response.ok) throw new Error(vi ? "Không thể kiểm tra tài khoản." : "Unable to check your account.");
+      if (!body.data?.profileComplete) return setAccountDialog("profile");
+      const query = new URLSearchParams({ publicCode, quoteId: quote.quoteId, checkIn: start, checkOut: end, guests: String(guests), nights: String(quote.nights), total: quote.total, deposit: quote.requiredDeposit, currency: quote.currency });
+      router.push(`/${locale}/${vi ? "xac-nhan-dat-phong" : "checkout"}?${query}`);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Request failed");
     } finally {
-      setBookingLoading(false);
+      setAccountCheck(false);
     }
   }
   return (
@@ -213,7 +205,7 @@ export function BookingCard({
                   onChange={(event) => setGuests(Number(event.target.value))}
                   className="mt-1 w-full bg-transparent text-sm font-semibold outline-none"
                 >
-                  {[2, 3, 4].map((n) => (
+                  {Array.from({ length: maxGuests }, (_, index) => index + 1).map((n) => (
                     <option key={n} value={n}>
                       {n} {vi ? "khách" : "guests"}
                     </option>
@@ -237,6 +229,7 @@ export function BookingCard({
               >
                 <StayCalendar
                   vi={vi}
+                  publicCode={publicCode}
                   start={start}
                   end={end}
                   onChange={(a, b) => {
@@ -302,129 +295,53 @@ export function BookingCard({
             value={money(quote.requiredDeposit, quote.currency, vi)}
             strong
           />
-          {!bookingCode ? (
-            <form
-              onSubmit={book}
-              className="mt-6 space-y-3 border-t border-black/8 pt-5"
-            >
-              <div>
-                <p className="font-display text-xl font-semibold">
-                  {vi ? "Thông tin đặt phòng" : "Booking details"}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-muted">
-                  {vi
-                    ? "Điền thông tin để giữ căn và nhận mã booking."
-                    : "Add your details to reserve this stay and receive a booking code."}
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <BookingInput name="lastName" label={vi ? "Họ" : "Last name"} />
-                <BookingInput
-                  name="firstName"
-                  label={vi ? "Tên" : "First name"}
-                />
-              </div>
-              <BookingInput
-                name="phone"
-                label={vi ? "Số điện thoại" : "Phone"}
-                type="tel"
-                placeholder="+84 90 123 4567"
-              />
-              <BookingInput
-                name="email"
-                label="Email"
-                type="email"
-                optional={vi ? "Không bắt buộc" : "Optional"}
-              />
-              <button
-                disabled={bookingLoading || !quote.quoteId}
-                className="focus-ring flex min-h-14 w-full items-center justify-center rounded-full bg-[#173f34] px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0f3027] disabled:opacity-45"
-              >
-                {bookingLoading ? (
-                  <StayLoader
-                    compact
-                    label={vi ? "Đang giữ căn" : "Reserving"}
-                  />
-                ) : vi ? (
-                  "Đặt căn hộ này"
-                ) : (
-                  "Book this apartment"
-                )}
-              </button>
-            </form>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-6 rounded-[20px] bg-[#e5eee8] p-5 text-center text-[#173f34]"
-            >
-              <p className="text-[10px] font-bold uppercase tracking-[.16em]">
-                {vi ? "Đặt phòng thành công" : "Booking created"}
-              </p>
-              <b className="mt-2 block font-display text-2xl">{bookingCode}</b>
-              <p className="mt-2 text-xs">
-                {vi
-                  ? "Hãy lưu mã này để tra cứu booking."
-                  : "Keep this code to look up your booking."}
-              </p>
-            </motion.div>
-          )}
+          <button type="button" onClick={continueBooking} disabled={accountCheck || !quote.quoteId} className="focus-ring mt-5 flex min-h-14 w-full items-center justify-center rounded-full bg-[#173f34] px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0f3027] disabled:opacity-45">
+            {accountCheck ? <StayLoader compact label={vi ? "Đang kiểm tra tài khoản" : "Checking account"} /> : vi ? "Tiếp tục đặt phòng" : "Continue booking"}
+          </button>
         </motion.div>
       )}
       <p className="mt-4 text-center text-[11px] text-muted">
         {vi ? "Bạn chưa bị tính phí ở bước này" : "You won’t be charged yet"}
       </p>
+      <Dialog open={accountDialog !== null} onOpenChange={(open) => !open && setAccountDialog(null)}>
+        <DialogContent title={accountDialog === "login" ? (vi ? "Bạn cần đăng nhập" : "Sign in required") : (vi ? "Hoàn thiện thông tin cá nhân" : "Complete your profile")}>
+          <p className="mt-3 text-sm leading-6 text-muted">
+            {accountDialog === "login" ? (vi ? "Đăng nhập hoặc tạo tài khoản để tiếp tục đặt căn hộ này." : "Sign in or create an account to continue this booking.") : (vi ? "Vui lòng cập nhật họ tên và số điện thoại trước khi đặt phòng." : "Please add your name and phone number before booking.")}
+          </p>
+          <button type="button" onClick={() => {
+            const returnTo = `${pathname}${currentSearch.size ? `?${currentSearch}` : ""}`;
+            router.push(accountDialog === "login" ? `/${locale}/${vi ? "dang-nhap" : "login"}?returnTo=${encodeURIComponent(returnTo)}` : `/${locale}/${vi ? "tai-khoan/ho-so" : "account/profile"}?returnTo=${encodeURIComponent(returnTo)}`);
+          }} className="mt-6 w-full rounded-full bg-[#173f34] px-5 py-3.5 font-bold text-white">
+            {accountDialog === "login" ? (vi ? "Đi tới đăng nhập" : "Go to sign in") : (vi ? "Cập nhật ngay" : "Update now")}
+          </button>
+        </DialogContent>
+      </Dialog>
     </aside>
-  );
-}
-function BookingInput({
-  name,
-  label,
-  type = "text",
-  placeholder,
-  optional,
-}: {
-  name: string;
-  label: string;
-  type?: string;
-  placeholder?: string;
-  optional?: string;
-}) {
-  return (
-    <label className="block rounded-[14px] border border-black/10 bg-white px-3.5 py-2.5 transition focus-within:border-[#d9784b]">
-      <span className="block text-[9px] font-bold uppercase tracking-[.12em] text-muted">
-        {label}
-        {optional && (
-          <small className="ml-1 normal-case tracking-normal">
-            · {optional}
-          </small>
-        )}
-      </span>
-      <input
-        required={!optional}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        className="mt-1 w-full bg-transparent text-sm outline-none placeholder:text-black/25"
-      />
-    </label>
   );
 }
 function StayCalendar({
   vi,
+  publicCode,
   start,
   end,
   onChange,
 }: {
   vi: boolean;
+  publicCode: string;
   start: string;
   end: string;
   onChange: (a: string, b: string) => void;
 }) {
   const now = new Date(),
-    first = new Date(now.getFullYear(), now.getMonth(), 1),
+    initialMonth = start ? parse(start) : now,
+    first = new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1),
     [month, setMonth] = useState(first),
     [hover, setHover] = useState(""),
+    [availability, setAvailability] = useState<{
+      key: string;
+      unavailable: Set<string>;
+      error: boolean;
+    }>({ key: "", unavailable: new Set(), error: false }),
     today = iso(now),
     year = month.getFullYear(),
     m = month.getMonth(),
@@ -435,8 +352,45 @@ function StayCalendar({
       ...Array.from({ length: days }, (_, i) => i + 1),
     ],
     rangeEnd = end || (start && hover > start ? hover : "");
+  const calendarKey = `${publicCode}:${year}-${m}`,
+    availabilityLoading = availability.key !== calendarKey,
+    availabilityError = !availabilityLoading && availability.error,
+    unavailable = availabilityLoading ? new Set<string>() : availability.unavailable;
+  useEffect(() => {
+    const controller = new AbortController();
+    const from = iso(new Date(year, m, 1));
+    const to = iso(new Date(year, m + 1, 1));
+    fetch(`/api/availability/calendar?${new URLSearchParams({ publicCode, from, to })}`, {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        const body = (await response.json()) as { data?: { unavailableNights?: string[] } };
+        if (!response.ok) throw new Error("Availability request failed");
+        setAvailability({
+          key: calendarKey,
+          unavailable: new Set(body.data?.unavailableNights ?? []),
+          error: false,
+        });
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setAvailability({ key: calendarKey, unavailable: new Set(), error: true });
+      });
+    return () => controller.abort();
+  }, [calendarKey, m, publicCode, year]);
+
+  const selectingCheckout = Boolean(start && !end);
+  const rangeHasUnavailableNight = (checkOut: string) => {
+    for (let cursor = parse(start); iso(cursor) < checkOut; cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 1)) {
+      if (unavailable.has(iso(cursor))) return true;
+    }
+    return false;
+  };
   function pick(value: string) {
-    if (value < today) return;
+    if (value < today || availabilityLoading || availabilityError) return;
+    if (unavailable.has(value) && !selectingCheckout) return;
+    if (selectingCheckout && value > start && rangeHasUnavailableNight(value)) return;
     if (!start || end || value <= start) onChange(value, "");
     else onChange(start, value);
   }
@@ -510,6 +464,8 @@ function StayCalendar({
                 return <span key={`e${index}`} className="aspect-square" />;
               const value = iso(new Date(year, m, day)),
                 past = value < today,
+                busy = unavailable.has(value),
+                disabled = past || availabilityLoading || availabilityError || (busy && !selectingCheckout),
                 edge = value === start || value === end,
                 inRange = Boolean(
                   start && rangeEnd && value > start && value < rangeEnd,
@@ -518,11 +474,11 @@ function StayCalendar({
                 <button
                   type="button"
                   key={value}
-                  disabled={past}
+                  disabled={disabled}
                   onMouseEnter={() => setHover(value)}
                   onFocus={() => setHover(value)}
                   onClick={() => pick(value)}
-                  className={`relative aspect-square text-sm transition duration-200 ${past ? "cursor-not-allowed text-black/20" : edge ? "z-10 rounded-full bg-[#d9784b] font-bold text-white shadow-[0_7px_18px_rgba(217,120,75,.35)]" : inRange ? "bg-[#e5eee8] text-[#173f34] first:rounded-l-full last:rounded-r-full" : "rounded-full hover:bg-[#f1e8dc]"}`}
+                  className={`relative aspect-square text-sm transition duration-200 ${past ? "cursor-not-allowed text-black/20" : busy ? selectingCheckout ? "rounded-full text-black/35 line-through hover:bg-[#f1e8dc]" : "cursor-not-allowed rounded-full bg-black/5 text-black/25 line-through" : edge ? "z-10 rounded-full bg-[#d9784b] font-bold text-white shadow-[0_7px_18px_rgba(217,120,75,.35)]" : inRange ? "bg-[#e5eee8] text-[#173f34] first:rounded-l-full last:rounded-r-full" : "rounded-full hover:bg-[#f1e8dc]"}`}
                 >
                   {day}
                   {value === today && (
@@ -534,6 +490,13 @@ function StayCalendar({
               );
             })}
           </div>
+          {(availabilityLoading || availabilityError) && (
+            <p className={`mt-3 text-center text-xs ${availabilityError ? "text-red-700" : "text-muted"}`}>
+              {availabilityLoading
+                ? vi ? "Đang tải lịch trống…" : "Loading availability…"
+                : vi ? "Không thể tải lịch trống. Vui lòng thử lại." : "Unable to load availability. Please try again."}
+            </p>
+          )}
           <div className="mt-5 flex items-center justify-between border-t border-black/8 pt-4">
             <button
               type="button"
@@ -543,7 +506,7 @@ function StayCalendar({
               {vi ? "Đặt lại" : "Reset"}
             </button>
             <Popover.Close
-              disabled={!start || !end}
+              disabled={!start || !end || availabilityLoading}
               className="rounded-full bg-[#173f34] px-5 py-2.5 text-xs font-bold text-white disabled:opacity-30"
             >
               {end
