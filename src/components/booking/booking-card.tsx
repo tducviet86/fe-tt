@@ -116,9 +116,15 @@ export function BookingCard({
           phone: form.get("phone"),
         }),
       });
-      const body = (await response.json()) as { data?: { bookingCode?: string }; error?: { message?: string } };
+      const body = (await response.json()) as {
+        data?: { bookingCode?: string };
+        error?: { message?: string };
+      };
       if (!response.ok || !body.data?.bookingCode)
-        throw new Error(body.error?.message ?? (vi ? "Chưa thể tạo booking." : "Unable to create booking."));
+        throw new Error(
+          body.error?.message ??
+            (vi ? "Chưa thể tạo booking." : "Unable to create booking."),
+        );
       setBookingCode(body.data.bookingCode);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed");
@@ -297,26 +303,70 @@ export function BookingCard({
             strong
           />
           {!bookingCode ? (
-            <form onSubmit={book} className="mt-6 space-y-3 border-t border-black/8 pt-5">
+            <form
+              onSubmit={book}
+              className="mt-6 space-y-3 border-t border-black/8 pt-5"
+            >
               <div>
-                <p className="font-display text-xl font-semibold">{vi ? "Thông tin đặt phòng" : "Booking details"}</p>
-                <p className="mt-1 text-xs leading-5 text-muted">{vi ? "Điền thông tin để giữ căn và nhận mã booking." : "Add your details to reserve this stay and receive a booking code."}</p>
+                <p className="font-display text-xl font-semibold">
+                  {vi ? "Thông tin đặt phòng" : "Booking details"}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-muted">
+                  {vi
+                    ? "Điền thông tin để giữ căn và nhận mã booking."
+                    : "Add your details to reserve this stay and receive a booking code."}
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <BookingInput name="lastName" label={vi ? "Họ" : "Last name"} />
-                <BookingInput name="firstName" label={vi ? "Tên" : "First name"} />
+                <BookingInput
+                  name="firstName"
+                  label={vi ? "Tên" : "First name"}
+                />
               </div>
-              <BookingInput name="phone" label={vi ? "Số điện thoại" : "Phone"} type="tel" placeholder="+84 90 123 4567" />
-              <BookingInput name="email" label="Email" type="email" optional={vi ? "Không bắt buộc" : "Optional"} />
-              <button disabled={bookingLoading || !quote.quoteId} className="focus-ring flex min-h-14 w-full items-center justify-center rounded-full bg-[#173f34] px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0f3027] disabled:opacity-45">
-                {bookingLoading ? <StayLoader compact label={vi ? "Đang giữ căn" : "Reserving"} /> : (vi ? "Đặt căn hộ này" : "Book this apartment")}
+              <BookingInput
+                name="phone"
+                label={vi ? "Số điện thoại" : "Phone"}
+                type="tel"
+                placeholder="+84 90 123 4567"
+              />
+              <BookingInput
+                name="email"
+                label="Email"
+                type="email"
+                optional={vi ? "Không bắt buộc" : "Optional"}
+              />
+              <button
+                disabled={bookingLoading || !quote.quoteId}
+                className="focus-ring flex min-h-14 w-full items-center justify-center rounded-full bg-[#173f34] px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0f3027] disabled:opacity-45"
+              >
+                {bookingLoading ? (
+                  <StayLoader
+                    compact
+                    label={vi ? "Đang giữ căn" : "Reserving"}
+                  />
+                ) : vi ? (
+                  "Đặt căn hộ này"
+                ) : (
+                  "Book this apartment"
+                )}
               </button>
             </form>
           ) : (
-            <motion.div initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} className="mt-6 rounded-[20px] bg-[#e5eee8] p-5 text-center text-[#173f34]">
-              <p className="text-[10px] font-bold uppercase tracking-[.16em]">{vi ? "Đặt phòng thành công" : "Booking created"}</p>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mt-6 rounded-[20px] bg-[#e5eee8] p-5 text-center text-[#173f34]"
+            >
+              <p className="text-[10px] font-bold uppercase tracking-[.16em]">
+                {vi ? "Đặt phòng thành công" : "Booking created"}
+              </p>
               <b className="mt-2 block font-display text-2xl">{bookingCode}</b>
-              <p className="mt-2 text-xs">{vi ? "Hãy lưu mã này để tra cứu booking." : "Keep this code to look up your booking."}</p>
+              <p className="mt-2 text-xs">
+                {vi
+                  ? "Hãy lưu mã này để tra cứu booking."
+                  : "Keep this code to look up your booking."}
+              </p>
             </motion.div>
           )}
         </motion.div>
@@ -327,7 +377,39 @@ export function BookingCard({
     </aside>
   );
 }
-function BookingInput({name,label,type="text",placeholder,optional}:{name:string;label:string;type?:string;placeholder?:string;optional?:string}){return <label className="block rounded-[14px] border border-black/10 bg-white px-3.5 py-2.5 transition focus-within:border-[#d9784b]"><span className="block text-[9px] font-bold uppercase tracking-[.12em] text-muted">{label}{optional&&<small className="ml-1 normal-case tracking-normal">· {optional}</small>}</span><input required={!optional} name={name} type={type} placeholder={placeholder} className="mt-1 w-full bg-transparent text-sm outline-none placeholder:text-black/25"/></label>}
+function BookingInput({
+  name,
+  label,
+  type = "text",
+  placeholder,
+  optional,
+}: {
+  name: string;
+  label: string;
+  type?: string;
+  placeholder?: string;
+  optional?: string;
+}) {
+  return (
+    <label className="block rounded-[14px] border border-black/10 bg-white px-3.5 py-2.5 transition focus-within:border-[#d9784b]">
+      <span className="block text-[9px] font-bold uppercase tracking-[.12em] text-muted">
+        {label}
+        {optional && (
+          <small className="ml-1 normal-case tracking-normal">
+            · {optional}
+          </small>
+        )}
+      </span>
+      <input
+        required={!optional}
+        name={name}
+        type={type}
+        placeholder={placeholder}
+        className="mt-1 w-full bg-transparent text-sm outline-none placeholder:text-black/25"
+      />
+    </label>
+  );
+}
 function StayCalendar({
   vi,
   start,

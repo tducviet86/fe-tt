@@ -1,2 +1,36 @@
-"use client";import{motion,useScroll,useTransform}from"motion/react";import Image from"next/image";import{useRef}from"react";
-export function HeroMotion(){const ref=useRef<HTMLDivElement>(null),{scrollYProgress}=useScroll({target:ref,offset:["start start","end start"]}),y=useTransform(scrollYProgress,[0,1],[0,120]),scale=useTransform(scrollYProgress,[0,1],[1,1.08]);return <div ref={ref} className="absolute inset-0 overflow-hidden"><motion.div style={{y,scale}} className="absolute inset-[10px] overflow-hidden rounded-[32px] sm:inset-5"><Image src="/tt-apartment-hero.png" alt="TT Apartment interior" fill priority sizes="100vw" className="object-cover"/><div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,24,18,.76),rgba(8,24,18,.18)_58%,transparent)]"/></motion.div><motion.div animate={{rotate:360}} transition={{duration:32,repeat:Infinity,ease:"linear"}} className="absolute -right-24 -top-28 size-72 rounded-[42%_58%_62%_38%] border border-white/25"/></div>}
+"use client";
+import { motion, useScroll, useTransform } from "motion/react";
+import Image from "next/image";
+import { useRef } from "react";
+export function HeroMotion() {
+  const ref = useRef<HTMLDivElement>(null),
+    { scrollYProgress } = useScroll({
+      target: ref,
+      offset: ["start start", "end start"],
+    }),
+    y = useTransform(scrollYProgress, [0, 1], [0, 120]),
+    scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  return (
+    <div ref={ref} className="absolute inset-0 overflow-hidden">
+      <motion.div
+        style={{ y, scale }}
+        className="absolute inset-[10px] overflow-hidden rounded-[32px] sm:inset-5"
+      >
+        <Image
+          src="/tt-apartment-hero.png"
+          alt="TT Apartment interior"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,24,18,.76),rgba(8,24,18,.18)_58%,transparent)]" />
+      </motion.div>
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
+        className="absolute -right-24 -top-28 size-72 rounded-[42%_58%_62%_38%] border border-white/25"
+      />
+    </div>
+  );
+}

@@ -1,1 +1,1 @@
-export{default,metadata}from"../tim-kiem/page";
+export { default, metadata } from "../tim-kiem/page";

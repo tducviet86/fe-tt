@@ -1,1 +1,81 @@
-"use client";import{FormEvent,useState}from"react";import{useRouter}from"next/navigation";import{LoaderCircle,LockKeyhole}from"lucide-react";export default function Login(){const router=useRouter();const[error,setError]=useState("");const[loading,setLoading]=useState(false);async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setLoading(true);setError("");const f=new FormData(e.currentTarget);const response=await fetch("/api/auth/login",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email:f.get("email"),password:f.get("password")})});if(response.ok){router.replace("/admin");router.refresh()}else{setError("Email hoặc mật khẩu không đúng.");setLoading(false)}}return <div className="mx-auto max-w-md py-12"><span className="grid size-12 place-items-center rounded-full bg-[#e4eee8] text-forest"><LockKeyhole/></span><h1 className="mt-6 font-display text-5xl font-semibold">Đăng nhập quản trị</h1><p className="mt-3 text-muted">Sử dụng tài khoản ADMIN_OWNER đã được seed trong backend.</p><form onSubmit={submit} className="mt-8 space-y-4"><label className="block text-sm font-semibold">Email<input name="email" type="email" required autoComplete="username" className="mt-2 w-full rounded-xl border bg-white px-4 py-3 font-normal outline-none focus:border-forest"/></label><label className="block text-sm font-semibold">Mật khẩu<input name="password" type="password" minLength={8} required autoComplete="current-password" className="mt-2 w-full rounded-xl border bg-white px-4 py-3 font-normal outline-none focus:border-forest"/></label>{error&&<p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}<button disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-forest py-3.5 font-semibold text-white disabled:opacity-60">{loading&&<LoaderCircle className="animate-spin" size={18}/>}Đăng nhập</button></form></div>}
+"use client";
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { LoaderCircle, LockKeyhole } from "lucide-react";
+export default function Login() {
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    const f = new FormData(e.currentTarget);
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        email: f.get("email"),
+        password: f.get("password"),
+      }),
+    });
+    if (response.ok) {
+      router.replace("/admin");
+      router.refresh();
+    } else {
+      setError("Email hoặc mật khẩu không đúng.");
+      setLoading(false);
+    }
+  }
+  return (
+    <div className="mx-auto max-w-md py-12">
+      <span className="grid size-12 place-items-center rounded-full bg-[#e4eee8] text-forest">
+        <LockKeyhole />
+      </span>
+      <h1 className="mt-6 font-display text-5xl font-semibold">
+        Đăng nhập quản trị
+      </h1>
+      <p className="mt-3 text-muted">
+        Sử dụng tài khoản ADMIN_OWNER đã được seed trong backend.
+      </p>
+      <form onSubmit={submit} className="mt-8 space-y-4">
+        <label className="block text-sm font-semibold">
+          Email
+          <input
+            name="email"
+            type="email"
+            required
+            autoComplete="username"
+            className="mt-2 w-full rounded-xl border bg-white px-4 py-3 font-normal outline-none focus:border-forest"
+          />
+        </label>
+        <label className="block text-sm font-semibold">
+          Mật khẩu
+          <input
+            name="password"
+            type="password"
+            minLength={8}
+            required
+            autoComplete="current-password"
+            className="mt-2 w-full rounded-xl border bg-white px-4 py-3 font-normal outline-none focus:border-forest"
+          />
+        </label>
+        {error && (
+          <p
+            role="alert"
+            className="rounded-xl bg-red-50 p-3 text-sm text-red-700"
+          >
+            {error}
+          </p>
+        )}
+        <button
+          disabled={loading}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-forest py-3.5 font-semibold text-white disabled:opacity-60"
+        >
+          {loading && <LoaderCircle className="animate-spin" size={18} />}Đăng
+          nhập
+        </button>
+      </form>
+    </div>
+  );
+}

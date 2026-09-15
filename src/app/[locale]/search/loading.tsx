@@ -1,1 +1,1 @@
-export{default}from"../tim-kiem/loading";
+export { default } from "../tim-kiem/loading";

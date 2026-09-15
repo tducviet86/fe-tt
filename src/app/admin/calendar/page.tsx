@@ -1,1 +1,9 @@
-import{AdminPlaceholder}from"@/components/admin/placeholder";export default function Page(){return <AdminPlaceholder title="Calendar" description="A unified availability calendar for every apartment."/>}
+import { AdminPlaceholder } from "@/components/admin/placeholder";
+export default function Page() {
+  return (
+    <AdminPlaceholder
+      title="Calendar"
+      description="A unified availability calendar for every apartment."
+    />
+  );
+}

@@ -1,1 +1,21 @@
-export function StayLoader({label,compact=false}:{label?:string;compact?:boolean}){return <span className={`stay-loader ${compact?"stay-loader--compact":""}`} role="status" aria-label={label??"Loading"}><span/><span/><span/><span/>{label&&<small>{label}</small>}</span>}
+export function StayLoader({
+  label,
+  compact = false,
+}: {
+  label?: string;
+  compact?: boolean;
+}) {
+  return (
+    <span
+      className={`stay-loader ${compact ? "stay-loader--compact" : ""}`}
+      role="status"
+      aria-label={label ?? "Loading"}
+    >
+      <span />
+      <span />
+      <span />
+      <span />
+      {label && <small>{label}</small>}
+    </span>
+  );
+}
