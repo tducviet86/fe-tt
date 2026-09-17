@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { authenticatedResponse } from "@/lib/auth/cookies";
 
-const input = z.object({ email: z.email(), password: z.string().min(8).max(128) });
+const input = z.object({ email: z.email(), password: z.string().min(8).max(128), firstName: z.string().trim().min(1), lastName: z.string().trim().min(1), phone: z.string().trim().min(8), nationality: z.string().trim().optional() });
 const output = z.object({ success: z.literal(true), data: z.object({ accessToken: z.string(), refreshToken: z.string(), expiresAt: z.string() }) });
 
 export async function POST(request: Request) {

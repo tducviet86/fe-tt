@@ -1,81 +1,10 @@
 "use client";
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
-import { LoaderCircle, LockKeyhole } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { LockKeyhole, ArrowRight, ShieldCheck } from "lucide-react";
+import { adminApi } from "@/components/admin/admin-types";
+import { Fields } from "@/components/admin/admin-ui";
 export default function Login() {
-  const router = useRouter();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  async function submit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    const f = new FormData(e.currentTarget);
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        email: f.get("email"),
-        password: f.get("password"),
-      }),
-    });
-    if (response.ok) {
-      router.replace("/admin");
-      router.refresh();
-    } else {
-      setError("Email hoặc mật khẩu không đúng.");
-      setLoading(false);
-    }
-  }
-  return (
-    <div className="mx-auto max-w-md py-12">
-      <span className="grid size-12 place-items-center rounded-full bg-[#e4eee8] text-forest">
-        <LockKeyhole />
-      </span>
-      <h1 className="mt-6 font-display text-5xl font-semibold">
-        Đăng nhập quản trị
-      </h1>
-      <p className="mt-3 text-muted">
-        Sử dụng tài khoản ADMIN_OWNER đã được seed trong backend.
-      </p>
-      <form onSubmit={submit} className="mt-8 space-y-4">
-        <label className="block text-sm font-semibold">
-          Email
-          <input
-            name="email"
-            type="email"
-            required
-            autoComplete="username"
-            className="mt-2 w-full rounded-xl border bg-white px-4 py-3 font-normal outline-none focus:border-forest"
-          />
-        </label>
-        <label className="block text-sm font-semibold">
-          Mật khẩu
-          <input
-            name="password"
-            type="password"
-            minLength={8}
-            required
-            autoComplete="current-password"
-            className="mt-2 w-full rounded-xl border bg-white px-4 py-3 font-normal outline-none focus:border-forest"
-          />
-        </label>
-        {error && (
-          <p
-            role="alert"
-            className="rounded-xl bg-red-50 p-3 text-sm text-red-700"
-          >
-            {error}
-          </p>
-        )}
-        <button
-          disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-forest py-3.5 font-semibold text-white disabled:opacity-60"
-        >
-          {loading && <LoaderCircle className="animate-spin" size={18} />}Đăng
-          nhập
-        </button>
-      </form>
-    </div>
-  );
+  const [error, setError] = useState(""); const [loading, setLoading] = useState(false);
+  return <div className="admin-login-card"><div className="admin-login-visual"><span>TT APARTMENT ↗</span><div><h2>Chăm chút từng<br/>kỳ nghỉ.</h2><p>Không gian làm việc dành cho đội ngũ TT Apartment.<br/>Quản lý đặt phòng, chăm sóc khách hàng và vận hành mỗi ngày.</p></div><small>A BETTER STAY, EVERY DAY.</small></div><div className="admin-login-form"><ShieldCheck size={28} className="text-forest"/><h1>Chào mừng trở lại.</h1><p>Đăng nhập bằng tài khoản quản trị hoặc nhân viên được cấp quyền.</p><form onSubmit={async e => { e.preventDefault(); if (loading) return; setLoading(true); setError(""); const f = new FormData(e.currentTarget); try { const response = await fetch("/api/auth/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email: f.get("email"), password: f.get("password") }) }); if (!response.ok) throw new Error(response.status >= 500 ? "Máy chủ chưa sẵn sàng. Vui lòng thử lại." : "Email hoặc mật khẩu không đúng."); const session = await adminApi<{ permissions: string[] }>("session"); const destinations = [["report.read", "/admin"], ["booking.read", "/admin/bookings"], ["availability.read", "/admin/calendar"], ["customer.read", "/admin/customers"], ["unit.read", "/admin/apartments"], ["payment.read", "/admin/payments"], ["staff.manage", "/admin/staff"], ["property.read", "/admin/properties"]]; const destination = destinations.find(([p]) => session.permissions.includes(p)); if (!destination) throw new Error("Tài khoản chưa được cấp quyền truy cập các chức năng quản trị."); location.assign(destination[1]); } catch(e) { setError((e as Error).message); setLoading(false); } }}><Fields fields={[{ name: "email", label: "Địa chỉ email", type: "email" }, { name: "password", label: "Mật khẩu", type: "password", minLength: 8 }]}/>{error && <p role="alert" className="admin-error">{error}</p>}<button className="admin-button" disabled={loading}><LockKeyhole size={15}/>{loading ? "Đang xác thực…" : "Đăng nhập quản trị"}<ArrowRight size={15}/></button></form><Link href="/vi">← Quay lại website</Link></div></div>;
 }

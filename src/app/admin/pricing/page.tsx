@@ -1,9 +1,2 @@
-import { AdminPlaceholder } from "@/components/admin/placeholder";
-export default function Page() {
-  return (
-    <AdminPlaceholder
-      title="Pricing"
-      description="Manage base, weekend and date-specific rates."
-    />
-  );
-}
+import { UnitManager } from "@/components/admin/resource-manager";
+export default function Page() { return <UnitManager pricing/>; }

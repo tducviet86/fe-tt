@@ -1,9 +1,2 @@
-import { AdminPlaceholder } from "@/components/admin/placeholder";
-export default function Page() {
-  return (
-    <AdminPlaceholder
-      title="Properties"
-      description="Manage property content, publication and address information."
-    />
-  );
-}
+import { PropertyManager } from "@/components/admin/resource-manager";
+export default function Page() { return <PropertyManager/>; }

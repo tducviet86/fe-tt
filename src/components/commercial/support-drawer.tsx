@@ -1,7 +1,10 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { MessageCircle, Phone } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 export function SupportDrawer() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/admin")) return null;
   return (
     <Dialog>
       <DialogTrigger asChild>
