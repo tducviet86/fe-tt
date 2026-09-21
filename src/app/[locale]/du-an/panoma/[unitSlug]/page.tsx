@@ -43,7 +43,10 @@ export default async function UnitPage({
   params: Promise<{ locale: string; unitSlug: string }>;
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
-  const [{ locale, unitSlug }, query] = await Promise.all([params, searchParams]);
+  const [{ locale, unitSlug }, query] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   if (!isLocale(locale)) notFound();
   const u = await getUnit(unitSlug);
   if (!u) notFound();

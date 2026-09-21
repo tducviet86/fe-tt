@@ -12,7 +12,10 @@ export async function GET(request: Request) {
   const parsed = input.safeParse(Object.fromEntries(url.searchParams));
   if (!parsed.success) {
     return NextResponse.json(
-      { success: false, error: { code: "VALIDATION", message: "Invalid availability request" } },
+      {
+        success: false,
+        error: { code: "VALIDATION", message: "Invalid availability request" },
+      },
       { status: 400 },
     );
   }
@@ -28,7 +31,13 @@ export async function GET(request: Request) {
     });
   } catch {
     return NextResponse.json(
-      { success: false, error: { code: "BACKEND_UNAVAILABLE", message: "Availability service is temporarily unavailable" } },
+      {
+        success: false,
+        error: {
+          code: "BACKEND_UNAVAILABLE",
+          message: "Availability service is temporarily unavailable",
+        },
+      },
       { status: 503 },
     );
   }

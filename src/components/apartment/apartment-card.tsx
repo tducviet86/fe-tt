@@ -1,6 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Bath, BedDouble, Check, MapPin, Maximize, Star, Users } from "lucide-react";
+import {
+  ArrowUpRight,
+  Bath,
+  BedDouble,
+  Check,
+  MapPin,
+  Maximize,
+  Star,
+  Users,
+} from "lucide-react";
 import type { Unit } from "@/lib/api/units";
 import type { Locale } from "@/lib/i18n/config";
 import { FavoriteButton } from "@/features/favorites/favorite-button";
@@ -28,7 +37,8 @@ export function ApartmentCard({
   const href = `${path}${query.size ? `?${query}` : ""}`;
   const image = unit.media[0]?.media.url;
   const rating = unit.reviews.length
-    ? unit.reviews.reduce((sum, review) => sum + review.rating, 0) / unit.reviews.length
+    ? unit.reviews.reduce((sum, review) => sum + review.rating, 0) /
+      unit.reviews.length
     : undefined;
   if (search)
     return (
@@ -65,7 +75,10 @@ export function ApartmentCard({
             <FavoriteButton code={unit.publicCode} />
           </div>
         </div>
-        <Link href={href} className="focus-ring flex min-w-0 flex-col p-4 sm:p-5">
+        <Link
+          href={href}
+          className="focus-ring flex min-w-0 flex-col p-4 sm:p-5"
+        >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[.16em] text-[#a35331]">
               <MapPin size={13} /> {unit.property.name} · Đà Nẵng
@@ -74,37 +87,68 @@ export function ApartmentCard({
               <Star size={15} className="fill-[#d9784b] text-[#d9784b]" />
               {rating ? rating.toFixed(1) : vi ? "Mới" : "New"}
               <small className="font-normal text-muted">
-                ({unit.reviews.length || (vi ? "chưa có" : "none")} {vi ? "đánh giá" : "reviews"})
+                ({unit.reviews.length || (vi ? "chưa có" : "none")}{" "}
+                {vi ? "đánh giá" : "reviews"})
               </small>
             </span>
           </div>
           <div className="mt-3 flex items-start justify-between gap-4">
             <div>
-              <h3 className="font-display text-2xl font-semibold leading-[1.05] tracking-[-.025em]">{vi ? unit.nameVi : unit.nameEn}</h3>
-              <p className="mt-2 line-clamp-1 text-sm leading-5 text-muted">{vi ? unit.descriptionVi : unit.descriptionEn}</p>
+              <h3 className="font-display text-2xl font-semibold leading-[1.05] tracking-[-.025em]">
+                {vi ? unit.nameVi : unit.nameEn}
+              </h3>
+              <p className="mt-2 line-clamp-1 text-sm leading-5 text-muted">
+                {vi ? unit.descriptionVi : unit.descriptionEn}
+              </p>
             </div>
             <span className="grid size-10 shrink-0 place-items-center rounded-full border border-black/10 transition duration-300 group-hover:rotate-45 group-hover:bg-[#173d30] group-hover:text-white">
               <ArrowUpRight size={18} />
             </span>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-1.5 text-[11px] text-[#42564d] sm:grid-cols-4">
-            <SearchFact icon={<BedDouble size={15} />} text={`${unit.bedroomCount} ${vi ? "phòng ngủ" : "bedrooms"}`} />
-            <SearchFact icon={<Bath size={15} />} text={`${unit.bathroomCount} ${vi ? "phòng tắm" : "baths"}`} />
-            <SearchFact icon={<Users size={15} />} text={`${unit.maxGuests} ${vi ? "khách" : "guests"}`} />
-            <SearchFact icon={<Maximize size={15} />} text={`${unit.area} m²`} />
+            <SearchFact
+              icon={<BedDouble size={15} />}
+              text={`${unit.bedroomCount} ${vi ? "phòng ngủ" : "bedrooms"}`}
+            />
+            <SearchFact
+              icon={<Bath size={15} />}
+              text={`${unit.bathroomCount} ${vi ? "phòng tắm" : "baths"}`}
+            />
+            <SearchFact
+              icon={<Users size={15} />}
+              text={`${unit.maxGuests} ${vi ? "khách" : "guests"}`}
+            />
+            <SearchFact
+              icon={<Maximize size={15} />}
+              text={`${unit.area} m²`}
+            />
           </div>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {unit.amenities.slice(0, 3).map(({ amenity }) => (
-              <span key={amenity.code} className="flex items-center gap-1 rounded-full bg-[#eef2ed] px-2.5 py-1 text-[10px] text-[#42564d]">
+              <span
+                key={amenity.code}
+                className="flex items-center gap-1 rounded-full bg-[#eef2ed] px-2.5 py-1 text-[10px] text-[#42564d]"
+              >
                 <Check size={12} /> {vi ? amenity.nameVi : amenity.nameEn}
               </span>
             ))}
           </div>
           <div className="mt-auto flex items-end justify-between gap-4 border-t border-black/8 pt-3">
-            <span className="rounded-full bg-[#e5eee8] px-2.5 py-1.5 text-[11px] font-bold text-[#173d30]">{vi ? "Trống trong kỳ đã chọn" : "Available for your dates"}</span>
+            <span className="rounded-full bg-[#e5eee8] px-2.5 py-1.5 text-[11px] font-bold text-[#173d30]">
+              {vi ? "Trống trong kỳ đã chọn" : "Available for your dates"}
+            </span>
             <div className="shrink-0 text-right">
-              <span className="block text-[11px] text-muted">{vi ? "Mỗi đêm, từ" : "Per night, from"}</span>
-              <p><b className="text-lg">{new Intl.NumberFormat(vi ? "vi-VN" : "en-US").format(unit.basePrice)}</b><small className="ml-1 text-muted">{unit.currency}</small></p>
+              <span className="block text-[11px] text-muted">
+                {vi ? "Mỗi đêm, từ" : "Per night, from"}
+              </span>
+              <p>
+                <b className="text-lg">
+                  {new Intl.NumberFormat(vi ? "vi-VN" : "en-US").format(
+                    unit.basePrice,
+                  )}
+                </b>
+                <small className="ml-1 text-muted">{unit.currency}</small>
+              </p>
             </div>
           </div>
         </Link>
@@ -194,7 +238,8 @@ export function ApartmentCard({
 function SearchFact({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <span className="flex items-center gap-1.5 rounded-lg border border-black/8 bg-white px-2.5 py-2">
-      <i className="text-[#a35331]">{icon}</i><b>{text}</b>
+      <i className="text-[#a35331]">{icon}</i>
+      <b>{text}</b>
     </span>
   );
 }

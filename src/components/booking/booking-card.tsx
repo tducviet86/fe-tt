@@ -59,7 +59,9 @@ export function BookingCard({
     [error, setError] = useState(""),
     [loading, setLoading] = useState(false),
     [accountCheck, setAccountCheck] = useState(false),
-    [accountDialog, setAccountDialog] = useState<"login" | "profile" | null>(null),
+    [accountDialog, setAccountDialog] = useState<"login" | "profile" | null>(
+      null,
+    ),
     [guests, setGuests] = useState(Math.min(initialGuests, maxGuests)),
     [start, setStart] = useState(initialCheckIn ?? ""),
     [end, setEnd] = useState(initialCheckOut ?? "");
@@ -113,11 +115,30 @@ export function BookingCard({
     try {
       const response = await fetch("/api/auth/session", { cache: "no-store" });
       if (response.status === 401) return setAccountDialog("login");
-      const body = (await response.json()) as { data?: { profileComplete?: boolean } };
-      if (!response.ok) throw new Error(vi ? "Không thể kiểm tra tài khoản." : "Unable to check your account.");
+      const body = (await response.json()) as {
+        data?: { profileComplete?: boolean };
+      };
+      if (!response.ok)
+        throw new Error(
+          vi
+            ? "Không thể kiểm tra tài khoản."
+            : "Unable to check your account.",
+        );
       if (!body.data?.profileComplete) return setAccountDialog("profile");
-      const query = new URLSearchParams({ publicCode, quoteId: quote.quoteId, checkIn: start, checkOut: end, guests: String(guests), nights: String(quote.nights), total: quote.total, deposit: quote.requiredDeposit, currency: quote.currency });
-      router.push(`/${locale}/${vi ? "xac-nhan-dat-phong" : "checkout"}?${query}`);
+      const query = new URLSearchParams({
+        publicCode,
+        quoteId: quote.quoteId,
+        checkIn: start,
+        checkOut: end,
+        guests: String(guests),
+        nights: String(quote.nights),
+        total: quote.total,
+        deposit: quote.requiredDeposit,
+        currency: quote.currency,
+      });
+      router.push(
+        `/${locale}/${vi ? "xac-nhan-dat-phong" : "checkout"}?${query}`,
+      );
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Request failed");
     } finally {
@@ -205,7 +226,10 @@ export function BookingCard({
                   onChange={(event) => setGuests(Number(event.target.value))}
                   className="mt-1 w-full bg-transparent text-sm font-semibold outline-none"
                 >
-                  {Array.from({ length: maxGuests }, (_, index) => index + 1).map((n) => (
+                  {Array.from(
+                    { length: maxGuests },
+                    (_, index) => index + 1,
+                  ).map((n) => (
                     <option key={n} value={n}>
                       {n} {vi ? "khách" : "guests"}
                     </option>
@@ -295,24 +319,71 @@ export function BookingCard({
             value={money(quote.requiredDeposit, quote.currency, vi)}
             strong
           />
-          <button type="button" onClick={continueBooking} disabled={accountCheck || !quote.quoteId} className="focus-ring mt-5 flex min-h-14 w-full items-center justify-center rounded-full bg-[#173f34] px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0f3027] disabled:opacity-45">
-            {accountCheck ? <StayLoader compact label={vi ? "Đang kiểm tra tài khoản" : "Checking account"} /> : vi ? "Tiếp tục đặt phòng" : "Continue booking"}
+          <button
+            type="button"
+            onClick={continueBooking}
+            disabled={accountCheck || !quote.quoteId}
+            className="focus-ring mt-5 flex min-h-14 w-full items-center justify-center rounded-full bg-[#173f34] px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0f3027] disabled:opacity-45"
+          >
+            {accountCheck ? (
+              <StayLoader
+                compact
+                label={vi ? "Đang kiểm tra tài khoản" : "Checking account"}
+              />
+            ) : vi ? (
+              "Tiếp tục đặt phòng"
+            ) : (
+              "Continue booking"
+            )}
           </button>
         </motion.div>
       )}
       <p className="mt-4 text-center text-[11px] text-muted">
         {vi ? "Bạn chưa bị tính phí ở bước này" : "You won’t be charged yet"}
       </p>
-      <Dialog open={accountDialog !== null} onOpenChange={(open) => !open && setAccountDialog(null)}>
-        <DialogContent title={accountDialog === "login" ? (vi ? "Bạn cần đăng nhập" : "Sign in required") : (vi ? "Hoàn thiện thông tin cá nhân" : "Complete your profile")}>
+      <Dialog
+        open={accountDialog !== null}
+        onOpenChange={(open) => !open && setAccountDialog(null)}
+      >
+        <DialogContent
+          title={
+            accountDialog === "login"
+              ? vi
+                ? "Bạn cần đăng nhập"
+                : "Sign in required"
+              : vi
+                ? "Hoàn thiện thông tin cá nhân"
+                : "Complete your profile"
+          }
+        >
           <p className="mt-3 text-sm leading-6 text-muted">
-            {accountDialog === "login" ? (vi ? "Đăng nhập hoặc tạo tài khoản để tiếp tục đặt căn hộ này." : "Sign in or create an account to continue this booking.") : (vi ? "Vui lòng cập nhật họ tên và số điện thoại trước khi đặt phòng." : "Please add your name and phone number before booking.")}
+            {accountDialog === "login"
+              ? vi
+                ? "Đăng nhập hoặc tạo tài khoản để tiếp tục đặt căn hộ này."
+                : "Sign in or create an account to continue this booking."
+              : vi
+                ? "Vui lòng cập nhật họ tên và số điện thoại trước khi đặt phòng."
+                : "Please add your name and phone number before booking."}
           </p>
-          <button type="button" onClick={() => {
-            const returnTo = `${pathname}${currentSearch.size ? `?${currentSearch}` : ""}`;
-            router.push(accountDialog === "login" ? `/${locale}/${vi ? "dang-nhap" : "login"}?returnTo=${encodeURIComponent(returnTo)}` : `/${locale}/${vi ? "tai-khoan/ho-so" : "account/profile"}?returnTo=${encodeURIComponent(returnTo)}`);
-          }} className="mt-6 w-full rounded-full bg-[#173f34] px-5 py-3.5 font-bold text-white">
-            {accountDialog === "login" ? (vi ? "Đi tới đăng nhập" : "Go to sign in") : (vi ? "Cập nhật ngay" : "Update now")}
+          <button
+            type="button"
+            onClick={() => {
+              const returnTo = `${pathname}${currentSearch.size ? `?${currentSearch}` : ""}`;
+              router.push(
+                accountDialog === "login"
+                  ? `/${locale}/${vi ? "dang-nhap" : "login"}?returnTo=${encodeURIComponent(returnTo)}`
+                  : `/${locale}/${vi ? "tai-khoan/ho-so" : "account/profile"}?returnTo=${encodeURIComponent(returnTo)}`,
+              );
+            }}
+            className="mt-6 w-full rounded-full bg-[#173f34] px-5 py-3.5 font-bold text-white"
+          >
+            {accountDialog === "login"
+              ? vi
+                ? "Đi tới đăng nhập"
+                : "Go to sign in"
+              : vi
+                ? "Cập nhật ngay"
+                : "Update now"}
           </button>
         </DialogContent>
       </Dialog>
@@ -355,17 +426,24 @@ function StayCalendar({
   const calendarKey = `${publicCode}:${year}-${m}`,
     availabilityLoading = availability.key !== calendarKey,
     availabilityError = !availabilityLoading && availability.error,
-    unavailable = availabilityLoading ? new Set<string>() : availability.unavailable;
+    unavailable = availabilityLoading
+      ? new Set<string>()
+      : availability.unavailable;
   useEffect(() => {
     const controller = new AbortController();
     const from = iso(new Date(year, m, 1));
     const to = iso(new Date(year, m + 1, 1));
-    fetch(`/api/availability/calendar?${new URLSearchParams({ publicCode, from, to })}`, {
-      cache: "no-store",
-      signal: controller.signal,
-    })
+    fetch(
+      `/api/availability/calendar?${new URLSearchParams({ publicCode, from, to })}`,
+      {
+        cache: "no-store",
+        signal: controller.signal,
+      },
+    )
       .then(async (response) => {
-        const body = (await response.json()) as { data?: { unavailableNights?: string[] } };
+        const body = (await response.json()) as {
+          data?: { unavailableNights?: string[] };
+        };
         if (!response.ok) throw new Error("Availability request failed");
         setAvailability({
           key: calendarKey,
@@ -374,15 +452,28 @@ function StayCalendar({
         });
       })
       .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") return;
-        setAvailability({ key: calendarKey, unavailable: new Set(), error: true });
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
+        setAvailability({
+          key: calendarKey,
+          unavailable: new Set(),
+          error: true,
+        });
       });
     return () => controller.abort();
   }, [calendarKey, m, publicCode, year]);
 
   const selectingCheckout = Boolean(start && !end);
   const rangeHasUnavailableNight = (checkOut: string) => {
-    for (let cursor = parse(start); iso(cursor) < checkOut; cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 1)) {
+    for (
+      let cursor = parse(start);
+      iso(cursor) < checkOut;
+      cursor = new Date(
+        cursor.getFullYear(),
+        cursor.getMonth(),
+        cursor.getDate() + 1,
+      )
+    ) {
       if (unavailable.has(iso(cursor))) return true;
     }
     return false;
@@ -390,7 +481,8 @@ function StayCalendar({
   function pick(value: string) {
     if (value < today || availabilityLoading || availabilityError) return;
     if (unavailable.has(value) && !selectingCheckout) return;
-    if (selectingCheckout && value > start && rangeHasUnavailableNight(value)) return;
+    if (selectingCheckout && value > start && rangeHasUnavailableNight(value))
+      return;
     if (!start || end || value <= start) onChange(value, "");
     else onChange(start, value);
   }
@@ -465,7 +557,11 @@ function StayCalendar({
               const value = iso(new Date(year, m, day)),
                 past = value < today,
                 busy = unavailable.has(value),
-                disabled = past || availabilityLoading || availabilityError || (busy && !selectingCheckout),
+                disabled =
+                  past ||
+                  availabilityLoading ||
+                  availabilityError ||
+                  (busy && !selectingCheckout),
                 edge = value === start || value === end,
                 inRange = Boolean(
                   start && rangeEnd && value > start && value < rangeEnd,
@@ -478,7 +574,7 @@ function StayCalendar({
                   onMouseEnter={() => setHover(value)}
                   onFocus={() => setHover(value)}
                   onClick={() => pick(value)}
-                  className={`relative aspect-square text-sm transition duration-200 ${past ? "cursor-not-allowed text-black/20" : busy ? selectingCheckout ? "rounded-full text-black/35 line-through hover:bg-[#f1e8dc]" : "cursor-not-allowed rounded-full bg-black/5 text-black/25 line-through" : edge ? "z-10 rounded-full bg-[#d9784b] font-bold text-white shadow-[0_7px_18px_rgba(217,120,75,.35)]" : inRange ? "bg-[#e5eee8] text-[#173f34] first:rounded-l-full last:rounded-r-full" : "rounded-full hover:bg-[#f1e8dc]"}`}
+                  className={`relative aspect-square text-sm transition duration-200 ${past ? "cursor-not-allowed text-black/20" : busy ? (selectingCheckout ? "rounded-full text-black/35 line-through hover:bg-[#f1e8dc]" : "cursor-not-allowed rounded-full bg-black/5 text-black/25 line-through") : edge ? "z-10 rounded-full bg-[#d9784b] font-bold text-white shadow-[0_7px_18px_rgba(217,120,75,.35)]" : inRange ? "bg-[#e5eee8] text-[#173f34] first:rounded-l-full last:rounded-r-full" : "rounded-full hover:bg-[#f1e8dc]"}`}
                 >
                   {day}
                   {value === today && (
@@ -491,10 +587,16 @@ function StayCalendar({
             })}
           </div>
           {(availabilityLoading || availabilityError) && (
-            <p className={`mt-3 text-center text-xs ${availabilityError ? "text-red-700" : "text-muted"}`}>
+            <p
+              className={`mt-3 text-center text-xs ${availabilityError ? "text-red-700" : "text-muted"}`}
+            >
               {availabilityLoading
-                ? vi ? "Đang tải lịch trống…" : "Loading availability…"
-                : vi ? "Không thể tải lịch trống. Vui lòng thử lại." : "Unable to load availability. Please try again."}
+                ? vi
+                  ? "Đang tải lịch trống…"
+                  : "Loading availability…"
+                : vi
+                  ? "Không thể tải lịch trống. Vui lòng thử lại."
+                  : "Unable to load availability. Please try again."}
             </p>
           )}
           <div className="mt-5 flex items-center justify-between border-t border-black/8 pt-4">

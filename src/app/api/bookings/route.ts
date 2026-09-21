@@ -11,7 +11,14 @@ const input = z.object({
 });
 export async function POST(request: Request) {
   const token = (await cookies()).get("access_token")?.value;
-  if (!token) return NextResponse.json({ success: false, error: { code: "UNAUTHENTICATED", message: "Login required" } }, { status: 401 });
+  if (!token)
+    return NextResponse.json(
+      {
+        success: false,
+        error: { code: "UNAUTHENTICATED", message: "Login required" },
+      },
+      { status: 401 },
+    );
   const parsed = input.safeParse(await request.json());
   if (!parsed.success)
     return NextResponse.json(
@@ -30,7 +37,10 @@ export async function POST(request: Request) {
       `${process.env.API_URL ?? "http://localhost:3000/api/v1"}/bookings`,
       {
         method: "POST",
-        headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(parsed.data),
         cache: "no-store",
       },

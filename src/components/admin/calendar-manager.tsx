@@ -2,16 +2,299 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, LockKeyhole, Trash2 } from "lucide-react";
 import { adminApi, CalendarData, date } from "./admin-types";
-import { Badge, DataState, Empty, FormModal, Heading, Modal, useData } from "./admin-ui";
+import {
+  Badge,
+  DataState,
+  Empty,
+  FormModal,
+  Heading,
+  Modal,
+  useData,
+} from "./admin-ui";
 import { useAdmin } from "./admin-shell";
 export function CalendarManager() {
-  const query = useData<CalendarData>("calendar"), { permissions } = useAdmin();
-  const [start, setStart] = useState(() => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" })); const [create, setCreate] = useState(false); const [remove, setRemove] = useState<string>(); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
-  const days = Array.from({ length: 14 }, (_, i) => new Date(+new Date(start + "T00:00:00Z") + i * 86400000).toISOString().slice(0, 10));
-  function shift(amount: number) { setStart(new Date(+new Date(start + "T00:00:00Z") + amount * 86400000).toISOString().slice(0, 10)); }
+  const query = useData<CalendarData>("calendar"),
+    { permissions } = useAdmin();
+  const [start, setStart] = useState(() =>
+    new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }),
+  );
+  const [create, setCreate] = useState(false);
+  const [remove, setRemove] = useState<string>();
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const days = Array.from({ length: 14 }, (_, i) =>
+    new Date(+new Date(start + "T00:00:00Z") + i * 86400000)
+      .toISOString()
+      .slice(0, 10),
+  );
+  function shift(amount: number) {
+    setStart(
+      new Date(+new Date(start + "T00:00:00Z") + amount * 86400000)
+        .toISOString()
+        .slice(0, 10),
+    );
+  }
   const canEdit = permissions.includes("availability.update");
-  return <><Heading title="Lịch phòng" description="Theo dõi 14 ngày lưu trú, khoảng trống và lịch bảo trì. Ngày trả phòng được tính là ngày trống." action={canEdit && <button className="admin-button" onClick={() => setCreate(true)}><LockKeyhole size={16}/>Khóa phòng / bảo trì</button>}/><section className="admin-panel"><div className="admin-toolbar"><div className="admin-calendar-controls"><button aria-label="14 ngày trước" onClick={() => shift(-14)}><ChevronLeft size={18}/></button><label>Từ ngày <input type="date" aria-label="Ngày bắt đầu lịch" value={start} onChange={e => { if (e.target.value) setStart(e.target.value); }}/></label><button aria-label="14 ngày sau" onClick={() => shift(14)}><ChevronRight size={18}/></button></div><div className="admin-calendar-legend">{["CONFIRMED", "PENDING_PAYMENT", "CHECKED_IN", "HOLD", "MAINTENANCE"].map(s => <Badge key={s} value={s}/>)}</div></div><DataState {...query}><div className="admin-table-scroll"><table className="admin-calendar"><thead><tr><th>Căn hộ / ngày</th>{days.map(day => <th key={day}><small>{new Date(day).toLocaleDateString("vi-VN", { weekday: "short", timeZone: "UTC" })}</small>{day.slice(8)}/{day.slice(5, 7)}</th>)}</tr></thead><tbody>{query.data?.units.map(u => <tr key={u.id}><th><b>{u.publicCode}</b><small>{u.nameVi}</small></th>{days.map(day => { const b = query.data?.bookings.find(b => b.unitId === u.id && b.checkIn.slice(0, 10) <= day && b.checkOut.slice(0, 10) > day); const block = query.data?.blocks.find(b => b.unitId === u.id && b.startDate.slice(0, 10) <= day && b.endDate.slice(0, 10) > day); const hold = query.data?.holds.find(h => h.unitId === u.id && h.startDate.slice(0, 10) <= day && h.endDate.slice(0, 10) > day); const state = b?.status || block?.state || (hold ? "HOLD" : u.status === "PUBLISHED" ? "AVAILABLE" : "INACTIVE"); return <td key={day}><span className={`admin-calendar-cell cell-${state.toLowerCase()}`} title={b ? `${b.bookingCode} · ${date(b.checkIn)} → ${date(b.checkOut)}` : block?.reason || (hold ? "Đang giữ chỗ" : u.status === "PUBLISHED" ? "Còn trống" : "Chưa mở bán")} aria-label={`${u.publicCode} ${day}: ${state}`}>{b ? "●" : block ? "—" : hold ? "◷" : u.status === "PUBLISHED" ? "·" : "×"}</span></td>; })}</tr>)}</tbody></table></div>{!query.data?.units.length && <Empty/>}</DataState></section><section className="admin-panel admin-blocks"><div className="admin-panel-heading"><div><h2>Phòng đang khóa & bảo trì</h2><p>Những khoảng thời gian đã đóng để không nhận booking mới.</p></div></div>{query.data?.blocks.length ? query.data.blocks.filter(b => b.endDate.slice(0, 10) >= start && b.startDate.slice(0, 10) <= days[13]).map(b => <div className="admin-block-row" key={b.id}><LockKeyhole size={18}/><div><b>{query.data?.units.find(u => u.id === b.unitId)?.nameVi}</b><small>{date(b.startDate)} → {date(b.endDate)} · {b.reason}</small></div><Badge value={b.state}/>{canEdit && <button className="admin-icon-button" onClick={() => { setRemove(b.id); setError(""); }} aria-label="Mở khóa phòng"><Trash2 size={17}/></button>}</div>) : <Empty text="Không có lịch khóa phòng"/>}</section>
-    {create && <FormModal title="Khóa phòng / lên lịch bảo trì" path="blocks" saved={query.reload} close={() => setCreate(false)} fields={[{ name: "unitId", label: "Căn hộ", options: query.data?.units.map(u => ({ value: u.id, label: u.nameVi })) ?? [] }, { name: "state", label: "Loại", value: "MAINTENANCE", options: [{ value: "MAINTENANCE", label: "Bảo trì" }, { value: "BLOCKED", label: "Khóa phòng" }] }, { name: "checkIn", label: "Bắt đầu", type: "date", value: start }, { name: "checkOut", label: "Kết thúc (không bao gồm)", type: "date" }, { name: "reason", label: "Lý do", minLength: 3 }]}/>}
-    {remove && <Modal title="Mở khóa phòng?" close={() => { if (!busy) setRemove(undefined); }}><p className="admin-form-note">Khoảng thời gian này sẽ được mở lại để nhận booking mới.</p>{error && <p role="alert" className="admin-error">{error}</p>}<div className="admin-modal-actions"><button className="admin-button secondary" onClick={() => setRemove(undefined)} disabled={busy}>Giữ nguyên</button><button className="admin-button" disabled={busy} onClick={async () => { setBusy(true); try { await adminApi(`blocks/${remove}`, "DELETE"); setRemove(undefined); query.reload(); } catch(e) { setError((e as Error).message); } finally { setBusy(false); } }}>Mở khóa phòng</button></div></Modal>}
-  </>;
+  return (
+    <>
+      <Heading
+        title="Lịch phòng"
+        description="Theo dõi 14 ngày lưu trú, khoảng trống và lịch bảo trì. Ngày trả phòng được tính là ngày trống."
+        action={
+          canEdit && (
+            <button className="admin-button" onClick={() => setCreate(true)}>
+              <LockKeyhole size={16} />
+              Khóa phòng / bảo trì
+            </button>
+          )
+        }
+      />
+      <section className="admin-panel">
+        <div className="admin-toolbar">
+          <div className="admin-calendar-controls">
+            <button aria-label="14 ngày trước" onClick={() => shift(-14)}>
+              <ChevronLeft size={18} />
+            </button>
+            <label>
+              Từ ngày{" "}
+              <input
+                type="date"
+                aria-label="Ngày bắt đầu lịch"
+                value={start}
+                onChange={(e) => {
+                  if (e.target.value) setStart(e.target.value);
+                }}
+              />
+            </label>
+            <button aria-label="14 ngày sau" onClick={() => shift(14)}>
+              <ChevronRight size={18} />
+            </button>
+          </div>
+          <div className="admin-calendar-legend">
+            {[
+              "CONFIRMED",
+              "PENDING_PAYMENT",
+              "CHECKED_IN",
+              "HOLD",
+              "MAINTENANCE",
+            ].map((s) => (
+              <Badge key={s} value={s} />
+            ))}
+          </div>
+        </div>
+        <DataState {...query}>
+          <div className="admin-table-scroll">
+            <table className="admin-calendar">
+              <thead>
+                <tr>
+                  <th>Căn hộ / ngày</th>
+                  {days.map((day) => (
+                    <th key={day}>
+                      <small>
+                        {new Date(day).toLocaleDateString("vi-VN", {
+                          weekday: "short",
+                          timeZone: "UTC",
+                        })}
+                      </small>
+                      {day.slice(8)}/{day.slice(5, 7)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {query.data?.units.map((u) => (
+                  <tr key={u.id}>
+                    <th>
+                      <b>{u.publicCode}</b>
+                      <small>{u.nameVi}</small>
+                    </th>
+                    {days.map((day) => {
+                      const b = query.data?.bookings.find(
+                        (b) =>
+                          b.unitId === u.id &&
+                          b.checkIn.slice(0, 10) <= day &&
+                          b.checkOut.slice(0, 10) > day,
+                      );
+                      const block = query.data?.blocks.find(
+                        (b) =>
+                          b.unitId === u.id &&
+                          b.startDate.slice(0, 10) <= day &&
+                          b.endDate.slice(0, 10) > day,
+                      );
+                      const hold = query.data?.holds.find(
+                        (h) =>
+                          h.unitId === u.id &&
+                          h.startDate.slice(0, 10) <= day &&
+                          h.endDate.slice(0, 10) > day,
+                      );
+                      const state =
+                        b?.status ||
+                        block?.state ||
+                        (hold
+                          ? "HOLD"
+                          : u.status === "PUBLISHED"
+                            ? "AVAILABLE"
+                            : "INACTIVE");
+                      return (
+                        <td key={day}>
+                          <span
+                            className={`admin-calendar-cell cell-${state.toLowerCase()}`}
+                            title={
+                              b
+                                ? `${b.bookingCode} · ${date(b.checkIn)} → ${date(b.checkOut)}`
+                                : block?.reason ||
+                                  (hold
+                                    ? "Đang giữ chỗ"
+                                    : u.status === "PUBLISHED"
+                                      ? "Còn trống"
+                                      : "Chưa mở bán")
+                            }
+                            aria-label={`${u.publicCode} ${day}: ${state}`}
+                          >
+                            {b
+                              ? "●"
+                              : block
+                                ? "—"
+                                : hold
+                                  ? "◷"
+                                  : u.status === "PUBLISHED"
+                                    ? "·"
+                                    : "×"}
+                          </span>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {!query.data?.units.length && <Empty />}
+        </DataState>
+      </section>
+      <section className="admin-panel admin-blocks">
+        <div className="admin-panel-heading">
+          <div>
+            <h2>Phòng đang khóa & bảo trì</h2>
+            <p>Những khoảng thời gian đã đóng để không nhận booking mới.</p>
+          </div>
+        </div>
+        {query.data?.blocks.length ? (
+          query.data.blocks
+            .filter(
+              (b) =>
+                b.endDate.slice(0, 10) >= start &&
+                b.startDate.slice(0, 10) <= days[13],
+            )
+            .map((b) => (
+              <div className="admin-block-row" key={b.id}>
+                <LockKeyhole size={18} />
+                <div>
+                  <b>
+                    {query.data?.units.find((u) => u.id === b.unitId)?.nameVi}
+                  </b>
+                  <small>
+                    {date(b.startDate)} → {date(b.endDate)} · {b.reason}
+                  </small>
+                </div>
+                <Badge value={b.state} />
+                {canEdit && (
+                  <button
+                    className="admin-icon-button"
+                    onClick={() => {
+                      setRemove(b.id);
+                      setError("");
+                    }}
+                    aria-label="Mở khóa phòng"
+                  >
+                    <Trash2 size={17} />
+                  </button>
+                )}
+              </div>
+            ))
+        ) : (
+          <Empty text="Không có lịch khóa phòng" />
+        )}
+      </section>
+      {create && (
+        <FormModal
+          title="Khóa phòng / lên lịch bảo trì"
+          path="blocks"
+          saved={query.reload}
+          close={() => setCreate(false)}
+          fields={[
+            {
+              name: "unitId",
+              label: "Căn hộ",
+              options:
+                query.data?.units.map((u) => ({
+                  value: u.id,
+                  label: u.nameVi,
+                })) ?? [],
+            },
+            {
+              name: "state",
+              label: "Loại",
+              value: "MAINTENANCE",
+              options: [
+                { value: "MAINTENANCE", label: "Bảo trì" },
+                { value: "BLOCKED", label: "Khóa phòng" },
+              ],
+            },
+            { name: "checkIn", label: "Bắt đầu", type: "date", value: start },
+            {
+              name: "checkOut",
+              label: "Kết thúc (không bao gồm)",
+              type: "date",
+            },
+            { name: "reason", label: "Lý do", minLength: 3 },
+          ]}
+        />
+      )}
+      {remove && (
+        <Modal
+          title="Mở khóa phòng?"
+          close={() => {
+            if (!busy) setRemove(undefined);
+          }}
+        >
+          <p className="admin-form-note">
+            Khoảng thời gian này sẽ được mở lại để nhận booking mới.
+          </p>
+          {error && (
+            <p role="alert" className="admin-error">
+              {error}
+            </p>
+          )}
+          <div className="admin-modal-actions">
+            <button
+              className="admin-button secondary"
+              onClick={() => setRemove(undefined)}
+              disabled={busy}
+            >
+              Giữ nguyên
+            </button>
+            <button
+              className="admin-button"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  await adminApi(`blocks/${remove}`, "DELETE");
+                  setRemove(undefined);
+                  query.reload();
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              Mở khóa phòng
+            </button>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
 }
