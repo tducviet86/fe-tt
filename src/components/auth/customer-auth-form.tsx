@@ -134,9 +134,9 @@ export function CustomerAuthForm({
             className="inline-flex items-center gap-3 text-sm font-bold tracking-[.18em]"
           >
             <span className="grid size-11 place-items-center rounded-full border border-white/25 bg-white/10">
-              TT
+              ABC
             </span>{" "}
-            TT APARTMENT
+            ABC APARTMENT
           </Link>
           <p className="mt-20 flex items-center gap-2 text-xs font-bold uppercase tracking-[.24em] text-[#efb282]">
             <Sparkles size={15} />{" "}
@@ -195,7 +195,7 @@ export function CustomerAuthForm({
           <div className="flex items-start justify-between gap-5">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#a35331]">
-                TT Apartment ·{" "}
+                ABC Apartment ·{" "}
                 {registering
                   ? vi
                     ? "Thành viên mới"

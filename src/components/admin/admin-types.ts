@@ -5,9 +5,30 @@ export type Customer = {
   email?: string;
   phone: string;
   notes?: string;
+  nationality?: string;
+  createdAt?: string;
+  updatedAt?: string;
   _count?: { bookings: number };
 };
 export type Unit = {
+  nameEn: string;
+  propertyId: string;
+  internalCode: string;
+  slugVi: string;
+  slugEn: string;
+  descriptionVi: string;
+  descriptionEn: string;
+  bathroomCount: string;
+  bedCount: number;
+  viewType?: string;
+  cleaningFee: string;
+  serviceFeeRate: string;
+  depositRate: string;
+  createdAt: string;
+  updatedAt: string;
+  amenities?: { amenityId: string; amenity: { nameVi: string; category: string } }[];
+  media?: { media: { url: string; altVi?: string }; type: string }[];
+
   id: string;
   nameVi: string;
   publicCode: string;
@@ -27,6 +48,9 @@ export type Payment = {
   type: string;
   status: string;
   createdAt: string;
+  paidAt?: string;
+  provider?: string;
+  providerReference?: string;
   booking?: { bookingCode: string };
 };
 export type Booking = {
@@ -45,6 +69,12 @@ export type Booking = {
   currency: string;
   guestCount: number;
   payments: Payment[];
+  subtotal: string;
+  fees: string;
+  discount: string;
+  createdAt: string;
+  updatedAt: string;
+  createdByUserId?: string;
 };
 export type Role = {
   id: string;

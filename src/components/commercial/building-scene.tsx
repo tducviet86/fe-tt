@@ -45,7 +45,7 @@ export default function BuildingScene() {
   const reduced = useReducedMotion();
   return (
     <Canvas
-      aria-label="Mô hình 3D TT Apartment"
+      aria-label="Mô hình 3D ABC Apartment"
       camera={{ position: [0, 0.1, 6.7], fov: 34 }}
       dpr={[1, 1.35]}
       frameloop={reduced ? "demand" : "always"}

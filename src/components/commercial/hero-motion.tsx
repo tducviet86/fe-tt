@@ -18,7 +18,7 @@ export function HeroMotion() {
       >
         <Image
           src="/tt-apartment-hero.png"
-          alt="TT Apartment interior"
+          alt="ABC Apartment interior"
           fill
           priority
           sizes="100vw"

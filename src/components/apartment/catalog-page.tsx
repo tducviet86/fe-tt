@@ -19,9 +19,9 @@ export function CatalogPage({
             className="flex items-center gap-3 text-sm font-bold tracking-[.18em]"
           >
             <span className="grid size-9 place-items-center rounded-full bg-[#173f34] text-xs text-white">
-              TT
+              ABC
             </span>
-            TT APARTMENT
+            ABC APARTMENT
           </Link>
           <Link
             href={`/${locale}`}
@@ -35,7 +35,7 @@ export function CatalogPage({
       <section className="border-b border-black/10 py-20 sm:py-28">
         <div className="container-site grid gap-8 lg:grid-cols-[.65fr_1.35fr]">
           <p className="text-[10px] font-bold uppercase tracking-[.24em] text-[#a35331]">
-            TT Apartment · Collection
+            ABC Apartment · Collection
           </p>
           <div>
             <h1 className="font-display text-[clamp(4rem,8vw,8rem)] font-medium leading-[.82] tracking-[-.06em]">
@@ -55,8 +55,8 @@ export function CatalogPage({
             </h1>
             <p className="mt-7 max-w-xl leading-7 text-[#5f6c65]">
               {vi
-                ? "Khám phá toàn bộ căn hộ TT Apartment tại Đà Nẵng — từ studio gọn nhẹ đến không gian rộng cho cả gia đình."
-                : "Explore every TT Apartment stay in Da Nang, from compact studios to generous spaces for the whole family."}
+                ? "Khám phá toàn bộ căn hộ ABC Apartment tại Đà Nẵng — từ studio gọn nhẹ đến không gian rộng cho cả gia đình."
+                : "Explore every ABC Apartment stay in Da Nang, from compact studios to generous spaces for the whole family."}
             </p>
           </div>
         </div>

@@ -119,8 +119,8 @@ export function HomeSearch({ locale }: { locale: "vi" | "en" }) {
                   <b className="text-sm">
                     {nights > 0
                       ? vi
-                        ? `${nights} đêm tại TT Apartment`
-                        : `${nights} nights at TT Apartment`
+                        ? `${nights} đêm tại ABC Apartment`
+                        : `${nights} nights at ABC Apartment`
                       : vi
                         ? "Chọn ngày nhận và trả phòng"
                         : "Select check-in and check-out"}

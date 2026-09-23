@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     );
   try {
     const upstream = await fetch(
-      `${process.env.API_URL ?? "http://localhost:3000/api/v1"}/auth/login`,
+      `${process.env.API_URL ?? "http://localhost:3000/api/v1"}/auth/customer-login`,
       {
         method: "POST",
         headers: { "content-type": "application/json" },

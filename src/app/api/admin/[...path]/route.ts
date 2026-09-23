@@ -13,6 +13,7 @@ async function forward(
     "quote",
     "customers",
     "units",
+    "amenities",
     "properties",
     "locations",
     "calendar",
@@ -38,7 +39,7 @@ async function forward(
       { error: { message: "Yêu cầu không hợp lệ." } },
       { status: 403 },
     );
-  const token = (await cookies()).get("access_token")?.value;
+  const token = (await cookies()).get("admin_access_token")?.value;
   if (!token)
     return NextResponse.json(
       { error: { message: "Vui lòng đăng nhập lại." } },

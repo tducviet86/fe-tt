@@ -148,45 +148,13 @@ export type Field = {
   max?: number;
   step?: string;
   minLength?: number;
+  section?: string;
+  help?: string;
+  wide?: boolean;
 };
 export function Fields({ fields }: { fields: Field[] }) {
-  return (
-    <div className="admin-fields">
-      {fields.map((f) => (
-        <label key={f.name}>
-          {f.label}
-          {f.required !== false && <span> *</span>}
-          {f.options ? (
-            <select
-              name={f.name}
-              required={f.required !== false}
-              defaultValue={f.value ?? ""}
-            >
-              <option value="" disabled>
-                Chọn {f.label.toLowerCase()}
-              </option>
-              {f.options.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <input
-              name={f.name}
-              type={f.type ?? "text"}
-              required={f.required !== false}
-              defaultValue={f.value}
-              min={f.min}
-              max={f.max}
-              step={f.step}
-              minLength={f.minLength}
-            />
-          )}
-        </label>
-      ))}
-    </div>
-  );
+  const sections = [...new Set(fields.map(f => f.section ?? "Thông tin"))];
+  return <div className="admin-form-sections">{sections.map(section => <fieldset key={section}><legend>{section}</legend><div className="admin-fields">{fields.filter(f => (f.section ?? "Thông tin") === section).map(f => <label key={f.name} className={f.wide || f.type === "textarea" ? "wide" : ""}>{f.label}{f.required !== false && <span> *</span>}{f.options ? <select name={f.name} required={f.required !== false} defaultValue={f.value ?? ""}><option value="" disabled>Chọn {f.label.toLowerCase()}</option>{f.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select> : f.type === "textarea" ? <textarea name={f.name} required={f.required !== false} defaultValue={f.value} rows={4} maxLength={20000}/> : <input name={f.name} type={f.type ?? "text"} required={f.required !== false} defaultValue={f.value} min={f.min} max={f.max} step={f.step} minLength={f.minLength} autoComplete={f.type === "password" ? "current-password" : f.type === "email" ? "email" : undefined}/>} {f.help && <small>{f.help}</small>}</label>)}</div></fieldset>)}</div>;
 }
 export function FormModal({
   title,
@@ -228,6 +196,8 @@ export function FormModal({
             const value = form.get(f.name);
             if (value !== "")
               data[f.name] = f.type === "number" ? Number(value) : value;
+            else if (f.required === false)
+              data[f.name] = f.type === "email" ? null : "";
           }
           try {
             await adminApi(path, method, transform ? transform(data) : data);

@@ -3,7 +3,7 @@ export function proxy(request: NextRequest) {
   if (
     request.nextUrl.pathname.startsWith("/admin") &&
     !request.nextUrl.pathname.startsWith("/admin/login") &&
-    !request.cookies.has("access_token")
+    !request.cookies.has("admin_access_token")
   ) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }

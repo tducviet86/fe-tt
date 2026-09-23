@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const token = (await cookies()).get("access_token")?.value;
+  const token = (await cookies()).get("customer_access_token")?.value;
   if (!token)
     return NextResponse.json(
       {

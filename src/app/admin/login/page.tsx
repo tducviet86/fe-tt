@@ -10,7 +10,7 @@ export default function Login() {
   return (
     <div className="admin-login-card">
       <div className="admin-login-visual">
-        <span>TT APARTMENT ↗</span>
+        <span>ABC APARTMENT ↗</span>
         <div>
           <h2>
             Chăm chút từng
@@ -18,7 +18,7 @@ export default function Login() {
             kỳ nghỉ.
           </h2>
           <p>
-            Không gian làm việc dành cho đội ngũ TT Apartment.
+            Không gian làm việc dành cho đội ngũ ABC Apartment.
             <br />
             Quản lý đặt phòng, chăm sóc khách hàng và vận hành mỗi ngày.
           </p>
@@ -37,7 +37,7 @@ export default function Login() {
             setError("");
             const f = new FormData(e.currentTarget);
             try {
-              const response = await fetch("/api/auth/login", {
+              const response = await fetch("/api/admin/auth/login", {
                 method: "POST",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({

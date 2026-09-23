@@ -12,7 +12,7 @@ export default function Loading() {
         <div className="flex min-h-[32vh] flex-col items-center justify-center">
           <StayLoader label="Đang chuẩn bị không gian của bạn" />
           <p className="mt-6 font-display text-2xl text-[#173f34]">
-            TT Apartment · Da Nang
+            ABC Apartment · Da Nang
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">

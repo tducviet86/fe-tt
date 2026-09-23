@@ -22,10 +22,10 @@ export function SiteHeader({ locale }: { locale: "vi" | "en" }) {
         <div className="container-site flex h-[72px] items-center justify-between">
           <Link href={`/${locale}`} className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-full border border-white/25 text-xs font-bold">
-              TT
+              ABC
             </span>
             <span>
-              <b className="block text-[13px] tracking-[.18em]">TT APARTMENT</b>
+              <b className="block text-[13px] tracking-[.18em]">ABC APARTMENT</b>
               <small className="block text-[8px] tracking-[.2em] text-white/45">
                 DA NANG
               </small>

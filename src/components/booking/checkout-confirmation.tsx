@@ -99,7 +99,7 @@ export function CheckoutConfirmation({
       <div className="mx-auto max-w-5xl">
         <BackButton label={vi ? "Quay lại căn hộ" : "Back to apartment"} />
         <p className="mt-8 text-xs font-bold tracking-[.18em] text-[#173f34]">
-          TT APARTMENT
+          ABC APARTMENT
         </p>
         <h1 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">
           {vi ? "Kiểm tra thông tin đặt phòng" : "Review your booking"}

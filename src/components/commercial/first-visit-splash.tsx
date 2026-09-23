@@ -35,7 +35,7 @@ export default function FirstVisitSplash() {
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="mx-auto grid size-20 place-items-center rounded-full border border-white/25 font-display text-2xl"
             >
-              TT
+              ABC
             </motion.div>
             <div className="mt-6 overflow-hidden">
               <motion.p
@@ -48,7 +48,7 @@ export default function FirstVisitSplash() {
                 }}
                 className="text-sm font-bold tracking-[.34em]"
               >
-                TT APARTMENT
+                ABC APARTMENT
               </motion.p>
             </div>
             <motion.span

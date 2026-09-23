@@ -7,7 +7,7 @@ import { SearchAtmosphere } from "@/components/search/search-atmosphere";
 import { getUnits } from "@/lib/api/units";
 import { isLocale } from "@/lib/i18n/config";
 export const metadata: Metadata = {
-  title: "Phòng trống tại TT Apartment",
+  title: "Phòng trống tại ABC Apartment",
   robots: { index: false, follow: true },
 };
 export default async function SearchPage({
@@ -38,9 +38,9 @@ export default async function SearchPage({
             className="flex items-center gap-3 text-sm font-bold tracking-[.16em]"
           >
             <span className="grid size-9 place-items-center rounded-full bg-[#173d30] text-xs text-white">
-              TT
+              ABC
             </span>
-            TT APARTMENT
+            ABC APARTMENT
           </Link>
           <Link
             href={`/${locale}#booking`}
@@ -59,7 +59,7 @@ export default async function SearchPage({
         <div className="container-site relative grid min-h-[440px] items-center gap-4 py-14 lg:grid-cols-[1.12fr_.88fr]">
           <div className="relative z-10">
             <p className="text-[11px] font-bold uppercase tracking-[.24em] text-[#a35331]">
-              TT Apartment · Đà Nẵng
+              ABC Apartment · Đà Nẵng
             </p>
             <h1 className="mt-5 max-w-3xl font-display text-[clamp(3.2rem,7vw,6.8rem)] font-semibold leading-[.86] tracking-[-.055em]">
               {vi ? (

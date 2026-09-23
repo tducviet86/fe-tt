@@ -13,9 +13,9 @@ export function SupportDrawer() {
           <span className="hidden sm:inline">Cần hỗ trợ?</span>
         </button>
       </DialogTrigger>
-      <DialogContent title="TT Apartment có thể giúp gì?">
+      <DialogContent title="ABC Apartment có thể giúp gì?">
         <p className="mt-3 text-sm leading-6 text-muted">
-          Liên hệ trực tiếp với đội ngũ TT Apartment để kiểm tra phòng trống
+          Liên hệ trực tiếp với đội ngũ ABC Apartment để kiểm tra phòng trống
           hoặc hỗ trợ kỳ nghỉ!
         </p>
         <div className="mt-6 grid gap-3">

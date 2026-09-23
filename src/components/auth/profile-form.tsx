@@ -132,9 +132,9 @@ export function ProfileForm({ locale }: { locale: "vi" | "en" }) {
             className="flex items-center gap-3 text-sm font-bold tracking-[.16em]"
           >
             <span className="grid size-10 place-items-center rounded-full border border-white/25 bg-white/10">
-              TT
+              ABC
             </span>{" "}
-            TT APARTMENT
+            ABC APARTMENT
           </Link>
           <Link
             href={returnTo}
@@ -184,7 +184,7 @@ export function ProfileForm({ locale }: { locale: "vi" | "en" }) {
             className="rounded-[34px] border border-white/20 bg-white/[.97] p-6 text-[#14241e] shadow-[0_40px_120px_rgba(0,0,0,.35)] sm:p-10"
           >
             <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#a35331]">
-              TT Apartment · {vi ? "Tài khoản" : "Account"}
+              ABC Apartment · {vi ? "Tài khoản" : "Account"}
             </p>
             <h2 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">
               {vi ? "Thông tin cá nhân" : "Personal details"}

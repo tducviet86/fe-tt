@@ -40,9 +40,9 @@ export function HomeExperience({
             className="flex items-center gap-3 text-[#173f34]"
           >
             <span className="grid size-10 place-items-center rounded-full bg-[#173f34] text-xs font-bold text-white">
-              TT
+              ABC
             </span>
-            <b className="hidden tracking-[.12em] sm:block">TT APARTMENT</b>
+            <b className="hidden tracking-[.12em] sm:block">ABC APARTMENT</b>
           </Link>
           <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-2 md:flex">
             <NavItem
@@ -128,7 +128,7 @@ export function HomeExperience({
           <div className="container-site flex flex-col justify-between gap-8 sm:flex-row sm:items-end">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#efb282]">
-                TT Apartment · Da Nang
+                ABC Apartment · Da Nang
               </p>
               <h2 className="mt-4 max-w-xl font-display text-4xl leading-none sm:text-5xl">
                 {vi

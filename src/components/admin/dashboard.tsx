@@ -24,9 +24,9 @@ export function AdminDashboard() {
   return (
     <>
       <Heading
-        eyebrow="TT APARTMENT / TỔNG QUAN"
-        title="Một ngày vận hành hiệu quả."
-        description="Mọi thông tin cần thiết cho một kỳ nghỉ trọn vẹn, tại một nơi."
+        eyebrow="ABC APARTMENT / TỔNG QUAN"
+        title="Tổng quan vận hành"
+        description="Theo dõi công suất, thanh toán và lịch đón khách trong ngày."
         action={
           <>
             {d && (
@@ -47,52 +47,7 @@ export function AdminDashboard() {
       <DataState {...query}>
         {d && (
           <>
-            <section className="admin-welcome">
-              <div>
-                <span className="admin-welcome-tag">
-                  <span /> TRỰC TIẾP TỪ HỆ THỐNG
-                </span>
-                <h2>
-                  Sẵn sàng đón những
-                  <br />
-                  kỳ nghỉ mới.
-                </h2>
-                <p>
-                  Hôm nay có{" "}
-                  <strong>{d.arrivals.length} lượt nhận phòng</strong> và{" "}
-                  <strong>{d.departures.length} lượt trả phòng.</strong>
-                  <br />
-                  Cùng chuẩn bị một trải nghiệm thật chu đáo cho khách.
-                </p>
-                <Link
-                  href={
-                    permissions.includes("availability.read")
-                      ? "/admin/calendar"
-                      : "/admin/bookings"
-                  }
-                >
-                  Xem lịch vận hành <ArrowUpRight size={18} />
-                </Link>
-              </div>
-              <div className="admin-welcome-art" aria-hidden="true">
-                <div className="admin-arch">
-                  <span className="admin-sun" />
-                  <span className="admin-sea" />
-                  <span className="admin-floor" />
-                </div>
-                <div className="admin-art-card">
-                  <Hotel size={20} />
-                  <div>
-                    <b>{d.units} căn hộ</b>
-                    <small>Đang mở bán</small>
-                  </div>
-                  <span>↗</span>
-                </div>
-                <span className="admin-art-caption">
-                  A BETTER STAY, EVERY DAY.
-                </span>
-              </div>
-            </section>
+            <section className="admin-operations-strip"><div><CalendarDays size={21}/><span><b>Lịch vận hành hôm nay</b><small>{date(d.today)} · Giờ Việt Nam</small></span></div><div><strong>{d.arrivals.length}</strong><span>Nhận phòng</span></div><div><strong>{d.departures.length}</strong><span>Trả phòng</span></div><div><strong>{d.units - d.occupied}</strong><span>Căn chưa được đặt</span></div>{permissions.includes("availability.read") && <Link href="/admin/calendar">Mở lịch phòng <ArrowRight size={15}/></Link>}</section>
             <div className="admin-stats">
               {[
                 {
@@ -171,11 +126,7 @@ export function AdminDashboard() {
               </section>
               <section className="admin-panel admin-checklist">
                 <span className="admin-overline">VẬN HÀNH MỖI NGÀY</span>
-                <h2>
-                  Đừng bỏ lỡ
-                  <br />
-                  điều quan trọng.
-                </h2>
+                <h2>Công việc cần xử lý</h2>
                 {[
                   {
                     n: "01",

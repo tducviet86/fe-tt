@@ -11,6 +11,7 @@ import {
   money,
   date,
 } from "./admin-types";
+import { BookingDetails } from "./record-details";
 import { useAdmin } from "./admin-shell";
 import {
   Badge,
@@ -502,41 +503,7 @@ export function BookingManager() {
           title={selected.bookingCode}
           close={() => setSelected(undefined)}
         >
-          <Badge value={selected.status} />
-          <h3 className="admin-detail-title">
-            {selected.customer.lastName} {selected.customer.firstName}
-          </h3>
-          <p className="admin-form-note">
-            {selected.customer.phone} ·{" "}
-            {selected.customer.email || "Chưa có email"}
-          </p>
-          <dl className="admin-summary">
-            <div>
-              <dt>Căn hộ</dt>
-              <dd>{selected.unit.nameVi}</dd>
-            </div>
-            <div>
-              <dt>Lưu trú</dt>
-              <dd>
-                {date(selected.checkIn)} → {date(selected.checkOut)}
-              </dd>
-            </div>
-            <div>
-              <dt>Tổng tiền</dt>
-              <dd>{money(selected.total, selected.currency)}</dd>
-            </div>
-            <div>
-              <dt>Đã thu / Cọc yêu cầu</dt>
-              <dd>
-                {money(selected.paidAmount, selected.currency)} /{" "}
-                {money(selected.depositRequired, selected.currency)}
-              </dd>
-            </div>
-            <div className="total">
-              <dt>Còn phải thu</dt>
-              <dd>{money(selected.remainingAmount, selected.currency)}</dd>
-            </div>
-          </dl>
+          <BookingDetails booking={selected}/>
           <div className="admin-action-grid">
             {permissions.includes("payment.confirm") &&
               Number(selected.remainingAmount) > 0 &&

@@ -11,14 +11,14 @@ export function authenticatedResponse(tokens: AuthTokens) {
     success: true,
     data: { authenticated: true },
   });
-  response.cookies.set("access_token", tokens.accessToken, {
+  response.cookies.set("customer_access_token", tokens.accessToken, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 15 * 60,
   });
-  response.cookies.set("refresh_token", tokens.refreshToken, {
+  response.cookies.set("customer_refresh_token", tokens.refreshToken, {
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",

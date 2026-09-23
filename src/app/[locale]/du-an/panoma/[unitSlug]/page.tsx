@@ -61,9 +61,9 @@ export default async function UnitPage({
             className="flex items-center gap-3 text-sm font-bold tracking-[.18em]"
           >
             <span className="grid size-9 place-items-center rounded-full bg-[#173f34] text-xs text-white">
-              TT
+              ABC
             </span>
-            TT APARTMENT
+            ABC APARTMENT
           </Link>
           <Link
             href={`/${locale}/${vi ? "can-ho" : "apartments"}`}
@@ -78,7 +78,7 @@ export default async function UnitPage({
         <div className="mb-8 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#a35331]">
-              TT Apartment · {u.publicCode}
+              ABC Apartment · {u.publicCode}
             </p>
             <h1 className="mt-4 max-w-4xl font-display text-[clamp(3.4rem,7vw,7.4rem)] font-medium leading-[.84] tracking-[-.06em]">
               {title}
@@ -171,7 +171,7 @@ export default async function UnitPage({
       <section className="bg-[#173f34] py-20 text-white">
         <div className="container-site">
           <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#efb282]">
-            TT Apartment · Da Nang
+            ABC Apartment · Da Nang
           </p>
           <h2 className="mt-5 max-w-4xl font-display text-6xl leading-[.9] tracking-[-.04em]">
             {vi

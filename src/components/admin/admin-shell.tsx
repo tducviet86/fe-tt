@@ -99,12 +99,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+  const isLogin = pathname === "/admin/login";
   useEffect(() => {
-    if (pathname === "/admin/login") return;
+    if (isLogin) return;
     let active = true;
     adminApi<Session>("session")
       .then((s) => {
-        if (active) setSession(s);
+        if (active) { setSession(s); setError(""); }
       })
       .catch((e) => {
         if (active) setError(e.message);
@@ -112,13 +113,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     return () => {
       active = false;
     };
-  }, [pathname]);
+  }, [isLogin]);
   if (pathname === "/admin/login")
     return <div className="admin-login">{children}</div>;
   const active = navigation.find((n) => n.href === pathname);
   const allowed = !active || session?.permissions.includes(active.permission);
   async function logout() {
-    const response = await fetch("/api/auth/logout", { method: "POST" });
+    const response = await fetch("/api/admin/auth/logout", { method: "POST" });
     if (response.ok) router.replace("/admin/login");
     else setError("Đăng xuất chưa thành công. Vui lòng thử lại.");
   }
@@ -135,10 +136,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <aside className={`admin-sidebar ${open ? "is-open" : ""}`}>
           <Link className="admin-brand" href="/admin">
             <span className="admin-brand-icon">
-              tt<span>↗</span>
+              ABC<span>↗</span>
             </span>
             <span>
-              TT Apartment<small>QUẢN TRỊ LƯU TRÚ</small>
+              ABC Apartment<small>QUẢN TRỊ LƯU TRÚ</small>
             </span>
           </Link>
           <div className="admin-workspace">
@@ -146,7 +147,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               <Building2 size={18} />
             </span>
             <div>
-              <b>TT Apartment</b>
+              <b>ABC Apartment</b>
               <small>Đà Nẵng, Việt Nam</small>
             </div>
             <span className="admin-dot" />
@@ -204,7 +205,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 <i /> Hệ thống quản trị
               </span>
               <span className="admin-avatar">
-                {session?.email.slice(0, 2).toUpperCase() || "TT"}
+                {session?.email.slice(0, 2).toUpperCase() || "ABC"}
               </span>
               <div>
                 <b>{session?.email ?? "Đang xác thực…"}</b>
@@ -242,7 +243,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             )}
           </main>
           <footer className="admin-footer">
-            © {new Date().getFullYear()} TT Apartment{" "}
+            © {new Date().getFullYear()} ABC Apartment{" "}
             <span>Chăm chút từng kỳ nghỉ.</span>
           </footer>
         </div>

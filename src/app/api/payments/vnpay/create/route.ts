@@ -8,7 +8,7 @@ const input = z.object({
   bankCode: z.enum(["VNPAYQR", "VNBANK", "INTCARD"]).optional(),
 });
 export async function POST(request: Request) {
-  const token = (await cookies()).get("access_token")?.value;
+  const token = (await cookies()).get("customer_access_token")?.value;
   if (!token)
     return NextResponse.json(
       {

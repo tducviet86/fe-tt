@@ -9,7 +9,7 @@ const input = z.object({
   nationality: z.string().trim().optional(),
 });
 export async function PATCH(request: Request) {
-  const token = (await cookies()).get("access_token")?.value;
+  const token = (await cookies()).get("customer_access_token")?.value;
   if (!token)
     return NextResponse.json(
       {
