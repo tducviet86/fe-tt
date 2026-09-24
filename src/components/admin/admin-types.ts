@@ -197,3 +197,5 @@ export async function adminApi<T>(
   }
   return result.data as T;
 }
+
+export const viewLabels: Record<string, string> = { CITY: "Thành phố", OCEAN: "Biển", GARDEN: "Vườn", POOL: "Hồ bơi", MOUNTAIN: "Núi", OTHER: "Khác" };
