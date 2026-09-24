@@ -119,12 +119,7 @@ export function ProfileForm({ locale }: { locale: "vi" | "en" }) {
     }
   }
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#071b15] px-4 py-10 text-white">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 top-20 size-[520px] rounded-full bg-[#d9784b]/20 blur-[120px]" />
-        <div className="absolute -right-48 bottom-[-20%] size-[650px] rounded-full bg-[#50b88b]/20 blur-[140px]" />
-        <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:36px_36px]" />
-      </div>
+    <main className="relative min-h-screen overflow-hidden bg-[#263b50] px-4 py-10 text-white">
       <div className="relative mx-auto max-w-6xl">
         <div className="flex items-center justify-between">
           <Link
@@ -146,11 +141,11 @@ export function ProfileForm({ locale }: { locale: "vi" | "en" }) {
         </div>
         <div className="mt-10 grid gap-7 lg:grid-cols-[320px_1fr]">
           <motion.aside
-            initial={{ opacity: 0, x: -18 }}
+            initial={false}
             animate={{ opacity: 1, x: 0 }}
-            className="rounded-[30px] border border-white/15 bg-white/[.08] p-7 backdrop-blur-xl"
+            className="rounded-xl border border-white/15 bg-white/[.08] p-7 backdrop-blur-xl"
           >
-            <span className="grid size-16 place-items-center rounded-2xl bg-[#efb282] text-[#173f34]">
+            <span className="grid size-16 place-items-center rounded-2xl bg-[#efb282] text-[#304f6e]">
               <CircleUserRound size={32} />
             </span>
             <p className="mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em] text-[#efb282]">
@@ -179,11 +174,11 @@ export function ProfileForm({ locale }: { locale: "vi" | "en" }) {
             </div>
           </motion.aside>
           <motion.section
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-[34px] border border-white/20 bg-white/[.97] p-6 text-[#14241e] shadow-[0_40px_120px_rgba(0,0,0,.35)] sm:p-10"
+            className="rounded-[34px] border border-white/20 bg-white/[.97] p-6 text-[#26384b] shadow-[0_40px_120px_rgba(0,0,0,.35)] sm:p-10"
           >
-            <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#a35331]">
+            <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#926b4f]">
               ABC Apartment · {vi ? "Tài khoản" : "Account"}
             </p>
             <h2 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">
@@ -261,7 +256,7 @@ export function ProfileForm({ locale }: { locale: "vi" | "en" }) {
                 )}
                 <button
                   disabled={saving}
-                  className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#173f34] px-6 font-bold text-white shadow-[0_14px_35px_rgba(23,63,52,.22)] transition hover:-translate-y-0.5 disabled:opacity-50 sm:col-span-2"
+                  className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#304f6e] px-6 font-bold text-white shadow-[0_14px_35px_rgba(23,63,52,.22)] transition hover:-translate-y-0.5 disabled:opacity-50 sm:col-span-2"
                 >
                   <Save size={17} />
                   {saving
@@ -301,7 +296,7 @@ function ProfileInput({
         type={type}
         defaultValue={defaultValue}
         required={required}
-        className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3.5 font-normal outline-none transition focus:border-[#d9784b] focus:ring-4 focus:ring-[#d9784b]/10"
+        className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3.5 font-normal outline-none transition focus:border-[#ac805d] focus:ring-4 focus:ring-[#ac805d]/10"
       />
     </label>
   );

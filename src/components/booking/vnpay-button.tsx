@@ -88,10 +88,10 @@ export function VnpayButton({
               type="button"
               disabled={loading}
               onClick={() => setBankCode(code)}
-              className={`flex items-center gap-3 rounded-2xl border p-3 text-left transition ${bankCode === code ? "border-[#173f34] bg-[#e8f0eb] ring-1 ring-[#173f34]" : "border-black/10 bg-white hover:border-[#173f34]/40"}`}
+              className={`flex items-center gap-3 rounded-2xl border p-3 text-left transition ${bankCode === code ? "border-[#304f6e] bg-[#e9eef4] ring-1 ring-[#304f6e]" : "border-black/10 bg-white hover:border-[#304f6e]/40"}`}
             >
               <span
-                className={`grid size-10 shrink-0 place-items-center rounded-xl ${bankCode === code ? "bg-[#173f34] text-white" : "bg-[#f3efe5] text-[#173f34]"}`}
+                className={`grid size-10 shrink-0 place-items-center rounded-xl ${bankCode === code ? "bg-[#304f6e] text-white" : "bg-[#f8f9fb] text-[#304f6e]"}`}
               >
                 <Icon size={19} />
               </span>
@@ -107,7 +107,7 @@ export function VnpayButton({
         type="button"
         onClick={pay}
         disabled={loading}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[#173f34] px-5 py-4 font-bold text-white shadow-[0_14px_35px_rgba(23,63,52,.25)] transition hover:-translate-y-0.5 hover:bg-[#0e3026] disabled:opacity-50"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[#304f6e] px-5 py-4 font-bold text-white shadow-[0_14px_35px_rgba(23,63,52,.25)] transition hover:-translate-y-0.5 hover:bg-[#0e3026] disabled:opacity-50"
       >
         {loading ? (
           <>

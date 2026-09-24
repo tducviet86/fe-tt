@@ -38,8 +38,8 @@ export default async function Page({
   const valid = verification?.validSignature === true,
     paid = verification?.success === true;
   return (
-    <main className="grid min-h-screen place-items-center bg-[#071b15] px-4 py-12 text-[#14241e]">
-      <section className="w-full max-w-xl rounded-[32px] border border-white/20 bg-[#fffdf8] p-8 text-center shadow-[0_40px_120px_rgba(0,0,0,.4)] sm:p-11">
+    <main className="grid min-h-screen place-items-center bg-[#263b50] px-4 py-12 text-[#26384b]">
+      <section className="w-full max-w-xl rounded-xl border border-white/20 bg-[#ffffff] p-8 text-center shadow-[0_40px_120px_rgba(0,0,0,.4)] sm:p-11">
         <span
           className={`mx-auto grid size-20 place-items-center rounded-full ${paid ? "bg-emerald-100 text-emerald-700" : valid ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}
         >
@@ -51,7 +51,7 @@ export default async function Page({
             <XCircle size={38} />
           )}
         </span>
-        <p className="mt-6 text-[10px] font-bold uppercase tracking-[.22em] text-[#a35331]">
+        <p className="mt-6 text-[10px] font-bold uppercase tracking-[.22em] text-[#926b4f]">
           VNPay Sandbox
         </p>
         <h1 className="mt-3 font-display text-4xl font-semibold">
@@ -77,7 +77,7 @@ export default async function Page({
               : `Response code: ${verification?.responseCode || "—"}. You can return and try again.`}
         </p>
         {verification?.bookingCode && (
-          <div className="mt-6 rounded-2xl bg-[#eef2ed] p-4 text-sm">
+          <div className="mt-6 rounded-2xl bg-[#e9eef4] p-4 text-sm">
             <span className="text-muted">Booking</span>
             <b className="ml-2">{verification.bookingCode}</b>
             {verification.transactionNo && (
@@ -97,7 +97,7 @@ export default async function Page({
           {verification?.bookingCode && (
             <Link
               href={`/${locale}/${vi ? "thanh-toan/vnpay" : "payment/vnpay"}?bookingCode=${encodeURIComponent(verification.bookingCode)}`}
-              className="rounded-full bg-[#173f34] px-5 py-3.5 font-bold text-white"
+              className="rounded-full bg-[#304f6e] px-5 py-3.5 font-bold text-white"
             >
               {paid
                 ? vi

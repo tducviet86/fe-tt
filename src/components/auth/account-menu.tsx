@@ -48,7 +48,7 @@ export function AccountMenu({
     return (
       <Link
         href={`/${locale}/${vi ? "dang-nhap" : "login"}`}
-        className={`rounded-full border px-4 py-2 text-xs font-bold ${dark ? "border-white/20 hover:border-white/50" : "border-black/10 text-[#173f34] hover:bg-black/5"}`}
+        className={`rounded-full border px-4 py-2 text-xs font-bold ${dark ? "border-white/20 hover:border-white/50" : "border-black/10 text-[#304f6e] hover:bg-black/5"}`}
       >
         {vi ? "Đăng nhập" : "Sign in"}
       </Link>
@@ -61,17 +61,17 @@ export function AccountMenu({
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className={`flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-xs font-bold ${dark ? "border-white/20" : "border-black/10 text-[#173f34]"}`}
+        className={`flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-xs font-bold ${dark ? "border-white/20" : "border-black/10 text-[#304f6e]"}`}
       >
         <span
-          className={`grid size-7 place-items-center rounded-full ${dark ? "bg-white text-[#173f34]" : "bg-[#173f34] text-white"}`}
+          className={`grid size-7 place-items-center rounded-full ${dark ? "bg-white text-[#304f6e]" : "bg-[#304f6e] text-white"}`}
         >
           {name.charAt(0).toUpperCase()}
         </span>
         <span className="hidden max-w-32 truncate sm:block">{name}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-2xl border border-black/10 bg-white py-2 text-[#14241e] shadow-xl">
+        <div className="absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-2xl border border-black/10 bg-white py-2 text-[#26384b] shadow-xl">
           <div className="border-b border-black/8 px-4 py-3">
             <b className="block truncate text-sm">{name}</b>
             <span className="block truncate text-xs text-muted">

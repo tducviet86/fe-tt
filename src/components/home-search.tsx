@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState, useTransition } from "react";
 import { StayLoader } from "@/components/ui/stay-loader";
 const pad = (n: number) => String(n).padStart(2, "0");
 const iso = (d: Date) =>
@@ -37,7 +37,7 @@ export function HomeSearch({ locale }: { locale: "vi" | "en" }) {
   const [start, setStart] = useState(""),
     [end, setEnd] = useState(""),
     [guests, setGuests] = useState(2),
-    [loading, setLoading] = useState(false);
+    [loading, startTransition] = useTransition();
   const nights = useMemo(
     () =>
       start && end
@@ -47,18 +47,18 @@ export function HomeSearch({ locale }: { locale: "vi" | "en" }) {
   );
   function submit(e: FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    router.push(
-      `/${locale}/${vi ? "tim-kiem" : "search"}?location=tt-apartment&checkIn=${start}&checkOut=${end}&guests=${guests}`,
+    startTransition(() =>
+      router.push(
+        `/${locale}/${vi ? "tim-kiem" : "search"}?location=tt-apartment&checkIn=${start}&checkOut=${end}&guests=${guests}`,
+      ),
     );
   }
   return (
     <motion.form
       id="booking"
       onSubmit={submit}
-      initial={{ opacity: 0, y: 32 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.65, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      initial={false}
+      aria-busy={loading}
       className="relative z-20 grid rounded-[24px] border border-black/5 bg-white p-2 text-[#153128] shadow-[0_30px_90px_rgba(25,45,36,.18)] md:grid-cols-[1.65fr_.8fr_auto]"
     >
       <Popover.Root>
@@ -96,7 +96,11 @@ export function HomeSearch({ locale }: { locale: "vi" | "en" }) {
             align="start"
             sideOffset={12}
             collisionPadding={12}
-            className="z-50 w-[min(920px,calc(100vw-24px))] overflow-hidden rounded-[30px] border border-black/8 bg-white shadow-[0_35px_110px_rgba(0,0,0,.25)]"
+            style={{
+              maxHeight:
+                "min(720px, var(--radix-popover-content-available-height))",
+            }}
+            className="z-50 max-h-[calc(100dvh-32px)] overflow-y-auto w-[min(920px,calc(100vw-24px))] rounded-[30px] border border-black/8 bg-white shadow-[0_35px_110px_rgba(0,0,0,.25)]"
             asChild
           >
             <motion.div
@@ -187,6 +191,8 @@ export function HomeSearch({ locale }: { locale: "vi" | "en" }) {
               <div className="flex items-center gap-3">
                 <button
                   type="button"
+                  aria-label={vi ? "Giảm số khách" : "Fewer guests"}
+                  disabled={guests <= 1}
                   onClick={() => setGuests(Math.max(1, guests - 1))}
                   className="grid size-9 place-items-center rounded-full border"
                 >
@@ -204,6 +210,8 @@ export function HomeSearch({ locale }: { locale: "vi" | "en" }) {
                 </AnimatePresence>
                 <button
                   type="button"
+                  aria-label={vi ? "Tăng số khách" : "More guests"}
+                  disabled={guests >= 6}
                   onClick={() => setGuests(Math.min(6, guests + 1))}
                   className="grid size-9 place-items-center rounded-full border"
                 >

@@ -1,13 +1,30 @@
 "use client";
-import { motion } from "motion/react";
 import { Heart } from "lucide-react";
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useToast } from "@/components/ui/toast-provider";
 const key = "the-stay-favorites";
-function read() {
-  if (typeof window === "undefined") return [] as string[];
+function snapshot() {
   try {
-    return JSON.parse(localStorage.getItem(key) ?? "[]") as string[];
+    return localStorage.getItem(key) ?? "[]";
+  } catch {
+    return "[]";
+  }
+}
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener("favorites-changed", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("favorites-changed", callback);
+  };
+}
+export function useFavorites(): string[] {
+  const raw = useSyncExternalStore(subscribe, snapshot, () => "[]");
+  try {
+    const value: unknown = JSON.parse(raw);
+    return Array.isArray(value)
+      ? value.filter((v): v is string => typeof v === "string")
+      : [];
   } catch {
     return [];
   }
@@ -19,32 +36,35 @@ export function FavoriteButton({
   code: string;
   label?: string;
 }) {
-  const [saved, setSaved] = useState(() => read().includes(code));
+  const values = useFavorites(),
+    saved = values.includes(code);
   const { notify } = useToast();
   function toggle() {
-    const values = new Set(read());
-    if (saved) values.delete(code);
-    else values.add(code);
-    localStorage.setItem(key, JSON.stringify([...values]));
-    setSaved(!saved);
-    notify(
-      saved ? "Đã bỏ khỏi danh sách lưu" : "Đã thêm vào yêu thích",
-      saved ? "info" : "success",
-    );
+    try {
+      localStorage.setItem(
+        key,
+        JSON.stringify(
+          saved ? values.filter((v) => v !== code) : [...values, code],
+        ),
+      );
+      window.dispatchEvent(new Event("favorites-changed"));
+      notify(
+        saved ? "Đã bỏ khỏi danh sách lưu" : "Đã thêm vào yêu thích",
+        saved ? "info" : "success",
+      );
+    } catch {
+      notify("Trình duyệt chưa cho phép lưu căn.", "error");
+    }
   }
   return (
-    <motion.button
-      whileTap={{ scale: 0.82 }}
+    <button
+      type="button"
       onClick={toggle}
-      className="focus-ring grid size-10 place-items-center rounded-full bg-white/92 text-ink shadow-sm"
+      className="focus-ring grid size-10 place-items-center rounded-full bg-white/92 text-ink shadow-sm active:scale-95"
       aria-label={label}
       aria-pressed={saved}
     >
-      <Heart
-        size={19}
-        fill={saved ? "#14543b" : "none"}
-        className={saved ? "text-forest" : ""}
-      />
-    </motion.button>
+      <Heart size={19} fill={saved ? "#263e56" : "none"} />
+    </button>
   );
 }

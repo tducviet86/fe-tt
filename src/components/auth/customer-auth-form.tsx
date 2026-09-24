@@ -100,32 +100,10 @@ export function CustomerAuthForm({
         ? "dang-nhap"
         : "login";
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#071b15] text-white">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 -top-40 size-[520px] rounded-full bg-[#d9784b]/25 blur-[110px]" />
-        <div className="absolute -bottom-48 right-[-8%] size-[620px] rounded-full bg-[#50b88b]/20 blur-[130px]" />
-        <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:34px_34px]" />
-        {[12, 28, 47, 66, 82].map((left, index) => (
-          <motion.i
-            key={left}
-            className="absolute size-1.5 rounded-full bg-[#f6c69e] shadow-[0_0_18px_5px_rgba(246,198,158,.55)]"
-            style={{ left: `${left}%`, top: `${18 + (index % 3) * 27}%` }}
-            animate={{
-              opacity: [0.2, 1, 0.2],
-              scale: [0.7, 1.4, 0.7],
-              y: [0, -14, 0],
-            }}
-            transition={{
-              duration: 2.5 + index * 0.4,
-              repeat: Infinity,
-              delay: index * 0.25,
-            }}
-          />
-        ))}
-      </div>
+    <main className="relative min-h-screen overflow-hidden bg-[#263b50] text-white">
       <div className="relative mx-auto grid min-h-screen max-w-7xl items-center gap-10 px-4 py-10 lg:grid-cols-[.9fr_1.1fr] lg:px-10">
         <motion.section
-          initial={{ opacity: 0, x: -24 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           className="hidden px-8 lg:block"
         >
@@ -187,14 +165,14 @@ export function CustomerAuthForm({
           </div>
         </motion.section>
         <motion.section
-          initial={{ opacity: 0, y: 24, scale: 0.98 }}
+          initial={false}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className={`mx-auto w-full rounded-[34px] border border-white/20 bg-white/[.96] p-6 text-[#14241e] shadow-[0_40px_120px_rgba(0,0,0,.38)] backdrop-blur-2xl sm:p-9 ${registering ? "max-w-2xl" : "max-w-lg"}`}
+          className={`mx-auto w-full rounded-xl border border-white/20 bg-white/[.96] p-6 text-[#26384b] shadow-xl sm:p-9 ${registering ? "max-w-2xl" : "max-w-lg"}`}
         >
           <div className="flex items-start justify-between gap-5">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#a35331]">
+              <p className="text-[10px] font-bold uppercase tracking-[.22em] text-[#926b4f]">
                 ABC Apartment ·{" "}
                 {registering
                   ? vi
@@ -204,7 +182,7 @@ export function CustomerAuthForm({
                     ? "Chào mừng trở lại"
                     : "Welcome back"}
               </p>
-              <h2 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">
+              <h2 className="mt-3 font-display text-3xl font-semibold sm:text-4xl">
                 {registering
                   ? vi
                     ? "Tạo tài khoản"
@@ -214,7 +192,7 @@ export function CustomerAuthForm({
                     : "Sign in"}
               </h2>
             </div>
-            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#e5eee8] text-[#173f34]">
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#e9eef4] text-[#304f6e]">
               <KeyRound />
             </span>
           </div>
@@ -299,7 +277,7 @@ export function CustomerAuthForm({
             )}
             <button
               disabled={loading}
-              className={`group flex min-h-14 items-center justify-center gap-3 rounded-full bg-[#173f34] px-6 font-bold text-white shadow-[0_14px_35px_rgba(23,63,52,.25)] transition hover:-translate-y-0.5 hover:bg-[#0e3026] disabled:opacity-50 ${registering ? "sm:col-span-2" : ""}`}
+              className={`group flex min-h-14 items-center justify-center gap-3 rounded-full bg-[#304f6e] px-6 font-bold text-white shadow-[0_14px_35px_rgba(23,63,52,.25)] transition hover:-translate-y-0.5 hover:bg-[#0e3026] disabled:opacity-50 ${registering ? "sm:col-span-2" : ""}`}
             >
               {loading
                 ? vi
@@ -333,7 +311,7 @@ export function CustomerAuthForm({
                 ? "Đã có tài khoản?"
                 : "Already registered?"}{" "}
             <Link
-              className="font-bold text-[#a35331] underline-offset-4 hover:underline"
+              className="font-bold text-[#926b4f] underline-offset-4 hover:underline"
               href={`/${locale}/${otherPath}?returnTo=${encodeURIComponent(returnTo)}`}
             >
               {mode === "login"
@@ -376,7 +354,7 @@ function AuthInput({
         autoComplete={autoComplete}
         placeholder={placeholder}
         required={required}
-        className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3.5 font-normal outline-none transition placeholder:text-black/25 focus:border-[#d9784b] focus:ring-4 focus:ring-[#d9784b]/10"
+        className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3.5 font-normal outline-none transition placeholder:text-black/25 focus:border-[#ac805d] focus:ring-4 focus:ring-[#ac805d]/10"
       />
     </label>
   );
@@ -406,7 +384,7 @@ function PasswordInput({
           autoComplete={autoComplete}
           minLength={8}
           required
-          className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3.5 pr-12 font-normal outline-none transition focus:border-[#d9784b] focus:ring-4 focus:ring-[#d9784b]/10"
+          className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3.5 pr-12 font-normal outline-none transition focus:border-[#ac805d] focus:ring-4 focus:ring-[#ac805d]/10"
         />
         <button
           type="button"

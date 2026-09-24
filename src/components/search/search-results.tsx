@@ -1,5 +1,6 @@
 "use client";
-import { motion } from "motion/react";
+import { useState } from "react";
+import Link from "next/link";
 import { ApartmentCard } from "@/components/apartment/apartment-card";
 import type { Unit } from "@/lib/api/units";
 import type { Locale } from "@/lib/i18n/config";
@@ -16,88 +17,78 @@ export function SearchResults({
   checkOut?: string;
   guests?: number;
 }) {
+  const [sort, setSort] = useState("default");
   const vi = locale === "vi";
+  const sorted = [...units].sort((a, b) =>
+    sort === "price"
+      ? a.basePrice - b.basePrice
+      : sort === "space"
+        ? b.area - a.area
+        : 0,
+  );
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 28 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {units.length ? (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.18 }}
-            className="mb-8 flex flex-wrap items-end justify-between gap-4"
-          >
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[.18em] text-[#a35331]">
-                {vi ? "Bộ sưu tập lưu trú" : "The stay collection"}
-              </p>
-              <h2 className="mt-2 font-display text-3xl font-semibold tracking-[-.03em] sm:text-4xl">
-                {units.length}{" "}
-                {vi ? "không gian dành cho bạn" : "places, ready for you"}
-              </h2>
-            </div>
-            <span className="flex items-center gap-2 rounded-full border border-[#173d30]/15 bg-[#e8f0eb] px-4 py-2 text-xs font-bold text-[#173d30]">
-              <i className="size-2 animate-pulse rounded-full bg-[#2c8c66]" />
-              {vi ? "Lịch trống vừa cập nhật" : "Availability just checked"}
-            </span>
-          </motion.div>
-          <motion.div
-            initial="hidden"
-            animate="show"
-            variants={{
-              hidden: {},
-              show: { transition: { staggerChildren: 0.1 } },
-            }}
-            className="mx-auto grid max-w-5xl gap-4"
-          >
-            {units.map((unit, index) => (
-              <motion.div
-                key={unit.publicCode}
-                variants={{
-                  hidden: { opacity: 0, y: 36, rotateX: 4 },
-                  show: {
-                    opacity: 1,
-                    y: 0,
-                    rotateX: 0,
-                    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
-                  },
-                }}
-                style={{ transformPerspective: 900 }}
-              >
-                <ApartmentCard
-                  unit={unit}
-                  locale={locale}
-                  search
-                  index={index}
-                  searchDates={{ checkIn, checkOut, guests }}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-        </>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="rounded-[30px] border border-black/8 bg-[#fffdf8] p-12 text-center shadow-sm"
-        >
-          <div className="mx-auto grid size-14 place-items-center rounded-full bg-[#f3e8dc] text-2xl">
-            ⌁
-          </div>
-          <h2 className="mt-5 font-display text-3xl font-semibold">
-            {vi ? "Chưa tìm thấy căn phù hợp" : "No matching stay just yet"}
+    <section>
+      <div className="customer-results-toolbar">
+        <div>
+          <h2 aria-live="polite">
+            {units.length} {vi ? "căn hộ phù hợp" : "matching apartments"}
           </h2>
-          <p className="mx-auto mt-2 max-w-md text-muted">
-            {vi
-              ? "Thử thay đổi ngày ở hoặc giảm số khách để khám phá thêm lựa chọn."
-              : "Try different dates or fewer guests to discover more options."}
+          <p>
+            {checkIn && checkOut
+              ? vi
+                ? "Lịch trống theo ngày bạn đã chọn."
+                : "Availability for your dates."
+              : vi
+                ? "Chọn ngày để kiểm tra phòng trống."
+                : "Choose dates to check availability."}
           </p>
-        </motion.div>
+        </div>
+        <select
+          aria-label={vi ? "Sắp xếp kết quả" : "Sort results"}
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="default">
+            {vi ? "Thứ tự mặc định" : "Default order"}
+          </option>
+          <option value="price">
+            {vi ? "Giá tăng dần" : "Price: low to high"}
+          </option>
+          <option value="space">
+            {vi ? "Diện tích lớn nhất" : "Most spacious"}
+          </option>
+        </select>
+      </div>
+      <div className="grid gap-5">
+        {sorted.map((unit, index) => (
+          <ApartmentCard
+            key={unit.publicCode}
+            unit={unit}
+            locale={locale}
+            search
+            index={index}
+            searchDates={{ checkIn, checkOut, guests }}
+          />
+        ))}
+      </div>
+      {!units.length && (
+        <div className="rounded-xl border border-slate-200 bg-white p-10 text-center">
+          <h3 className="text-xl font-semibold">
+            {vi ? "Chưa có căn phù hợp" : "No matching apartments"}
+          </h3>
+          <p className="my-4 text-sm text-muted">
+            {vi
+              ? "Thử ngày khác hoặc thay đổi số khách để tìm thêm lựa chọn."
+              : "Try different dates or guest counts."}
+          </p>
+          <Link
+            className="inline-flex rounded-lg bg-forest px-5 py-3 text-sm text-white"
+            href={`/${locale}#booking`}
+          >
+            {vi ? "Đổi lịch tìm phòng" : "Change dates"}
+          </Link>
+        </div>
       )}
-    </motion.section>
+    </section>
   );
 }

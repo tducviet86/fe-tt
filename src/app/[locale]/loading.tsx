@@ -1,35 +1,27 @@
-import { StayLoader } from "@/components/ui/stay-loader";
 export default function Loading() {
   return (
-    <main className="min-h-screen bg-[#f3efe5]">
+    <main
+      className="min-h-screen bg-[#f8f9fb] px-5 py-6 text-[#263e56]"
+      aria-busy="true"
+    >
       <div className="route-loading-line" />
-      <header className="border-b border-black/8">
-        <div className="container-site flex h-20 items-center">
-          <div className="soft-skeleton h-9 w-44 rounded-full" />
+      <div className="mx-auto max-w-6xl">
+        <p className="border-b border-slate-200 pb-6 text-sm font-bold tracking-widest">
+          ABC APARTMENT.
+        </p>
+        <p role="status" className="py-7 text-sm">
+          Đang tải nội dung… / Loading…
+        </p>
+        <div aria-hidden="true" className="grid gap-6 md:grid-cols-2">
+          <div className="space-y-5 py-7">
+            <div className="soft-skeleton h-12 w-3/4 rounded" />
+            <div className="soft-skeleton h-12 w-2/3 rounded" />
+            <div className="soft-skeleton h-5 w-full rounded" />
+            <div className="soft-skeleton h-12 w-40 rounded" />
+          </div>
+          <div className="soft-skeleton h-72 rounded-xl" />
         </div>
-      </header>
-      <section className="container-site py-14">
-        <div className="flex min-h-[32vh] flex-col items-center justify-center">
-          <StayLoader label="Đang chuẩn bị không gian của bạn" />
-          <p className="mt-6 font-display text-2xl text-[#173f34]">
-            ABC Apartment · Da Nang
-          </p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="overflow-hidden rounded-[26px] border border-black/5 bg-[#fffdf8]"
-            >
-              <div className="soft-skeleton aspect-[4/3]" />
-              <div className="space-y-3 p-5">
-                <div className="soft-skeleton h-3 w-1/3 rounded-full" />
-                <div className="soft-skeleton h-7 w-3/4 rounded-full" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      </div>
     </main>
   );
 }

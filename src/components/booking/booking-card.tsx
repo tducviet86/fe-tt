@@ -146,12 +146,12 @@ export function BookingCard({
     }
   }
   return (
-    <aside className="rounded-[30px] border border-black/10 bg-[#fffdf8] p-6 shadow-[0_24px_80px_rgba(25,43,35,.13)]">
+    <aside className="rounded-xl border border-black/10 bg-[#ffffff] p-6 shadow-[0_24px_80px_rgba(25,43,35,.13)]">
       <div className="flex items-center justify-between">
-        <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#a35331]">
+        <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#926b4f]">
           {vi ? "Đặt trực tiếp" : "Book direct"}
         </p>
-        <span className="rounded-full bg-[#e5eee8] px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-[#173f34]">
+        <span className="rounded-full bg-[#e9eef4] px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-[#304f6e]">
           {vi ? "Giá tốt nhất" : "Best rate"}
         </span>
       </div>
@@ -166,13 +166,13 @@ export function BookingCard({
       <form onSubmit={submit}>
         <Popover.Root>
           <div className="relative mt-7 grid gap-3">
-            <div className="absolute left-[27px] top-14 h-[74px] w-px border-l border-dashed border-[#d9784b]/50" />
+            <div className="absolute left-[27px] top-14 h-[74px] w-px border-l border-dashed border-[#ac805d]/50" />
             <Popover.Trigger asChild>
               <button
                 type="button"
-                className="group flex items-center gap-4 rounded-[18px] border border-black/10 bg-white p-3.5 text-left transition duration-300 hover:-translate-y-0.5 hover:border-[#d9784b] hover:shadow-[0_10px_30px_rgba(217,120,75,.12)]"
+                className="group flex items-center gap-4 rounded-[18px] border border-black/10 bg-white p-3.5 text-left transition duration-300 hover:-translate-y-0.5 hover:border-[#ac805d] hover:shadow-[0_10px_30px_rgba(217,120,75,.12)]"
               >
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#f5e8dd] text-[#a35331]">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#f5e8dd] text-[#926b4f]">
                   <CalendarDays size={16} />
                 </span>
                 <span className="min-w-0 grow">
@@ -190,9 +190,9 @@ export function BookingCard({
             <Popover.Trigger asChild>
               <button
                 type="button"
-                className="group flex items-center gap-4 rounded-[18px] border border-black/10 bg-white p-3.5 text-left transition duration-300 hover:-translate-y-0.5 hover:border-[#173f34] hover:shadow-[0_10px_30px_rgba(23,63,52,.1)]"
+                className="group flex items-center gap-4 rounded-[18px] border border-black/10 bg-white p-3.5 text-left transition duration-300 hover:-translate-y-0.5 hover:border-[#304f6e] hover:shadow-[0_10px_30px_rgba(23,63,52,.1)]"
               >
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#e5eee8] text-[#173f34]">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#e9eef4] text-[#304f6e]">
                   <MoonStar size={16} />
                 </span>
                 <span className="min-w-0 grow">
@@ -206,14 +206,14 @@ export function BookingCard({
                   </b>
                 </span>
                 {nights > 0 && (
-                  <span className="rounded-full bg-[#173f34] px-2.5 py-1 text-[10px] font-bold text-white">
+                  <span className="rounded-full bg-[#304f6e] px-2.5 py-1 text-[10px] font-bold text-white">
                     {nights} {vi ? "đêm" : "nights"}
                   </span>
                 )}
               </button>
             </Popover.Trigger>
-            <label className="flex items-center gap-4 rounded-[18px] border border-black/10 bg-white p-3.5 transition focus-within:border-[#d9784b]">
-              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#eeeae0] text-[#173f34]">
+            <label className="flex items-center gap-4 rounded-[18px] border border-black/10 bg-white p-3.5 transition focus-within:border-[#ac805d]">
+              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#eeeae0] text-[#304f6e]">
                 <Users size={16} />
               </span>
               <span className="grow">
@@ -243,7 +243,7 @@ export function BookingCard({
               align="end"
               sideOffset={12}
               collisionPadding={12}
-              className="z-50 w-[min(380px,calc(100vw-24px))] overflow-hidden rounded-[28px] border border-black/8 bg-[#fffdf8] shadow-[0_30px_100px_rgba(20,36,30,.24)]"
+              className="z-50 w-[min(380px,calc(100vw-24px))] overflow-hidden rounded-xl border border-black/8 bg-[#ffffff] shadow-[0_30px_100px_rgba(20,36,30,.24)]"
               asChild
             >
               <motion.div
@@ -268,7 +268,7 @@ export function BookingCard({
         </Popover.Root>
         <button
           disabled={loading || !start || !end}
-          className="focus-ring group mt-4 flex min-h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-[#d9784b] px-6 font-bold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#bd6038] disabled:cursor-not-allowed disabled:opacity-45"
+          className="focus-ring group mt-4 flex min-h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-[#ac805d] px-6 font-bold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#bd6038] disabled:cursor-not-allowed disabled:opacity-45"
         >
           {loading ? (
             <StayLoader compact label={vi ? "Đang kiểm tra" : "Checking"} />
@@ -323,7 +323,7 @@ export function BookingCard({
             type="button"
             onClick={continueBooking}
             disabled={accountCheck || !quote.quoteId}
-            className="focus-ring mt-5 flex min-h-14 w-full items-center justify-center rounded-full bg-[#173f34] px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0f3027] disabled:opacity-45"
+            className="focus-ring mt-5 flex min-h-14 w-full items-center justify-center rounded-full bg-[#304f6e] px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#0f3027] disabled:opacity-45"
           >
             {accountCheck ? (
               <StayLoader
@@ -375,7 +375,7 @@ export function BookingCard({
                   : `/${locale}/${vi ? "tai-khoan/ho-so" : "account/profile"}?returnTo=${encodeURIComponent(returnTo)}`,
               );
             }}
-            className="mt-6 w-full rounded-full bg-[#173f34] px-5 py-3.5 font-bold text-white"
+            className="mt-6 w-full rounded-full bg-[#304f6e] px-5 py-3.5 font-bold text-white"
           >
             {accountDialog === "login"
               ? vi
@@ -498,7 +498,7 @@ function StayCalendar({
           <ChevronLeft size={18} />
         </button>
         <div className="text-center">
-          <p className="text-[9px] font-bold uppercase tracking-[.18em] text-[#a35331]">
+          <p className="text-[9px] font-bold uppercase tracking-[.18em] text-[#926b4f]">
             {!start || end
               ? vi
                 ? "Chọn ngày nhận phòng"
@@ -574,12 +574,12 @@ function StayCalendar({
                   onMouseEnter={() => setHover(value)}
                   onFocus={() => setHover(value)}
                   onClick={() => pick(value)}
-                  className={`relative aspect-square text-sm transition duration-200 ${past ? "cursor-not-allowed text-black/20" : busy ? (selectingCheckout ? "rounded-full text-black/35 line-through hover:bg-[#f1e8dc]" : "cursor-not-allowed rounded-full bg-black/5 text-black/25 line-through") : edge ? "z-10 rounded-full bg-[#d9784b] font-bold text-white shadow-[0_7px_18px_rgba(217,120,75,.35)]" : inRange ? "bg-[#e5eee8] text-[#173f34] first:rounded-l-full last:rounded-r-full" : "rounded-full hover:bg-[#f1e8dc]"}`}
+                  className={`relative aspect-square text-sm transition duration-200 ${past ? "cursor-not-allowed text-black/20" : busy ? (selectingCheckout ? "rounded-full text-black/35 line-through hover:bg-[#f1e8dc]" : "cursor-not-allowed rounded-full bg-black/5 text-black/25 line-through") : edge ? "z-10 rounded-full bg-[#ac805d] font-bold text-white shadow-[0_7px_18px_rgba(217,120,75,.35)]" : inRange ? "bg-[#e9eef4] text-[#304f6e] first:rounded-l-full last:rounded-r-full" : "rounded-full hover:bg-[#f1e8dc]"}`}
                 >
                   {day}
                   {value === today && (
                     <i
-                      className={`absolute bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full ${edge ? "bg-white" : "bg-[#d9784b]"}`}
+                      className={`absolute bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full ${edge ? "bg-white" : "bg-[#ac805d]"}`}
                     />
                   )}
                 </button>
@@ -609,7 +609,7 @@ function StayCalendar({
             </button>
             <Popover.Close
               disabled={!start || !end || availabilityLoading}
-              className="rounded-full bg-[#173f34] px-5 py-2.5 text-xs font-bold text-white disabled:opacity-30"
+              className="rounded-full bg-[#304f6e] px-5 py-2.5 text-xs font-bold text-white disabled:opacity-30"
             >
               {end
                 ? vi

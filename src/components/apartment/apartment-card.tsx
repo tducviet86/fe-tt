@@ -42,8 +42,8 @@ export function ApartmentCard({
     : undefined;
   if (search)
     return (
-      <article className="group relative grid overflow-hidden rounded-[22px] border border-black/8 bg-[#fffdf8] shadow-[0_12px_40px_rgba(32,48,40,.07)] transition duration-500 hover:-translate-y-0.5 hover:shadow-[0_20px_55px_rgba(32,48,40,.13)] md:grid-cols-[minmax(240px,36%)_1fr]">
-        <div className="relative aspect-[16/10] overflow-hidden bg-[#dfe6e0] md:aspect-auto md:min-h-[248px]">
+      <article className="group relative grid overflow-hidden rounded-xl border border-black/8 bg-[#ffffff] shadow-[0_12px_40px_rgba(32,48,40,.07)] transition duration-500 hover:-translate-y-0.5 hover:shadow-[0_20px_55px_rgba(32,48,40,.13)] md:grid-cols-[minmax(240px,36%)_1fr]">
+        <div className="relative aspect-[16/10] overflow-hidden bg-[#e5ebf1] md:aspect-auto md:min-h-[248px]">
           {image ? (
             <Image
               src={image}
@@ -80,11 +80,11 @@ export function ApartmentCard({
           className="focus-ring flex min-w-0 flex-col p-4 sm:p-5"
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[.16em] text-[#a35331]">
+            <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[.16em] text-[#926b4f]">
               <MapPin size={13} /> {unit.property.name} · Đà Nẵng
             </p>
-            <span className="flex items-center gap-1.5 text-sm font-bold text-[#173d30]">
-              <Star size={15} className="fill-[#d9784b] text-[#d9784b]" />
+            <span className="flex items-center gap-1.5 text-sm font-bold text-[#304f6e]">
+              <Star size={15} className="fill-[#ac805d] text-[#ac805d]" />
               {rating ? rating.toFixed(1) : vi ? "Mới" : "New"}
               <small className="font-normal text-muted">
                 ({unit.reviews.length || (vi ? "chưa có" : "none")}{" "}
@@ -101,11 +101,11 @@ export function ApartmentCard({
                 {vi ? unit.descriptionVi : unit.descriptionEn}
               </p>
             </div>
-            <span className="grid size-10 shrink-0 place-items-center rounded-full border border-black/10 transition duration-300 group-hover:rotate-45 group-hover:bg-[#173d30] group-hover:text-white">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full border border-black/10 transition duration-300 group-hover:rotate-45 group-hover:bg-[#304f6e] group-hover:text-white">
               <ArrowUpRight size={18} />
             </span>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-1.5 text-[11px] text-[#42564d] sm:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-1.5 text-[11px] text-[#526b82] sm:grid-cols-4">
             <SearchFact
               icon={<BedDouble size={15} />}
               text={`${unit.bedroomCount} ${vi ? "phòng ngủ" : "bedrooms"}`}
@@ -127,15 +127,21 @@ export function ApartmentCard({
             {unit.amenities.slice(0, 3).map(({ amenity }) => (
               <span
                 key={amenity.code}
-                className="flex items-center gap-1 rounded-full bg-[#eef2ed] px-2.5 py-1 text-[10px] text-[#42564d]"
+                className="flex items-center gap-1 rounded-full bg-[#e9eef4] px-2.5 py-1 text-[10px] text-[#526b82]"
               >
                 <Check size={12} /> {vi ? amenity.nameVi : amenity.nameEn}
               </span>
             ))}
           </div>
           <div className="mt-auto flex items-end justify-between gap-4 border-t border-black/8 pt-3">
-            <span className="rounded-full bg-[#e5eee8] px-2.5 py-1.5 text-[11px] font-bold text-[#173d30]">
-              {vi ? "Trống trong kỳ đã chọn" : "Available for your dates"}
+            <span className="rounded-full bg-[#e9eef4] px-2.5 py-1.5 text-[11px] font-bold text-[#304f6e]">
+              {searchDates?.checkIn && searchDates?.checkOut
+                ? vi
+                  ? "Trống trong kỳ đã chọn"
+                  : "Available for your dates"
+                : vi
+                  ? "Chọn ngày để kiểm tra"
+                  : "Choose dates to check"}
             </span>
             <div className="shrink-0 text-right">
               <span className="block text-[11px] text-muted">
@@ -156,10 +162,10 @@ export function ApartmentCard({
     );
   return (
     <article
-      className={`group relative ${featured ? "lg:grid lg:grid-cols-[1.2fr_.8fr] lg:rounded-[32px] lg:bg-cream" : ""}`}
+      className={`group relative ${featured ? "lg:grid lg:grid-cols-[1.2fr_.8fr] lg:rounded-xl lg:bg-cream" : ""}`}
     >
       <div
-        className={`relative overflow-hidden bg-[#e8ece9] ${featured ? "aspect-[4/3] rounded-[28px] lg:aspect-[16/11]" : "aspect-[4/3] rounded-[24px]"}`}
+        className={`relative overflow-hidden bg-[#e8ece9] ${featured ? "aspect-[4/3] rounded-xl lg:aspect-[16/11]" : "aspect-[4/3] rounded-xl"}`}
       >
         {image ? (
           <Image
@@ -238,7 +244,7 @@ export function ApartmentCard({
 function SearchFact({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <span className="flex items-center gap-1.5 rounded-lg border border-black/8 bg-white px-2.5 py-2">
-      <i className="text-[#a35331]">{icon}</i>
+      <i className="text-[#926b4f]">{icon}</i>
       <b>{text}</b>
     </span>
   );

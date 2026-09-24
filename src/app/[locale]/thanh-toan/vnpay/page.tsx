@@ -61,7 +61,7 @@ export default async function Page({
                   {vi ? "Chọn cách thanh toán" : "Choose how to pay"}
                 </h1>
               </div>
-              <span className="rounded-lg bg-[#eef5f1] px-3 py-2 text-xs font-semibold text-[#173f34]">
+              <span className="rounded-lg bg-[#eef5f1] px-3 py-2 text-xs font-semibold text-[#304f6e]">
                 VNPay Sandbox
               </span>
             </div>
@@ -102,7 +102,7 @@ export default async function Page({
                     <p className="text-[#617068]">
                       {vi ? "Thanh toán đặt cọc" : "Deposit due"}
                     </p>
-                    <b className="text-base text-[#a35331]">
+                    <b className="text-base text-[#926b4f]">
                       {money(booking.depositRequired)}
                     </b>
                   </div>

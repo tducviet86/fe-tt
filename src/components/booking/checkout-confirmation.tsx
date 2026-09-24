@@ -62,43 +62,52 @@ export function CheckoutConfirmation({
   async function confirm() {
     setLoading(true);
     setError("");
-    const response = await fetch("/api/bookings", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        publicCode: checkout.publicCode,
-        quoteId: checkout.quoteId,
-        checkIn: checkout.checkIn,
-        checkOut: checkout.checkOut,
-        guestCount: checkout.guests,
-        source: "WEBSITE",
-      }),
-    });
-    const body = (await response.json()) as {
-      data?: { bookingCode?: string };
-      error?: { message?: string };
-    };
-    if (!response.ok || !body.data?.bookingCode) {
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          publicCode: checkout.publicCode,
+          quoteId: checkout.quoteId,
+          checkIn: checkout.checkIn,
+          checkOut: checkout.checkOut,
+          guestCount: checkout.guests,
+          source: "WEBSITE",
+        }),
+      });
+      const body = (await response.json()) as {
+        data?: { bookingCode?: string };
+        error?: { message?: string };
+      };
+      if (!response.ok || !body.data?.bookingCode) {
+        setError(
+          body.error?.message ??
+            (vi ? "Không thể tạo đặt phòng." : "Unable to create booking."),
+        );
+        setLoading(false);
+        return;
+      }
+      router.push(
+        `/${locale}/${vi ? "thanh-toan/vnpay" : "payment/vnpay"}?bookingCode=${encodeURIComponent(body.data.bookingCode)}`,
+      );
+    } catch {
       setError(
-        body.error?.message ??
-          (vi ? "Không thể tạo đặt phòng." : "Unable to create booking."),
+        vi
+          ? "Kết nối bị gián đoạn. Vui lòng thử lại."
+          : "Connection interrupted. Please try again.",
       );
       setLoading(false);
-      return;
     }
-    router.push(
-      `/${locale}/${vi ? "thanh-toan/vnpay" : "payment/vnpay"}?bookingCode=${encodeURIComponent(body.data.bookingCode)}`,
-    );
   }
   const name = vi ? unit.nameVi : unit.nameEn,
     image = unit.media[0]?.media.url;
   const money = (value: string) =>
     `${new Intl.NumberFormat(vi ? "vi-VN" : "en-US").format(Number(value))} ${checkout.currency}`;
   return (
-    <main className="min-h-screen bg-[#f3efe5] px-4 py-10 text-[#14241e]">
+    <main className="min-h-screen bg-[#f8f9fb] px-4 py-10 text-[#26384b]">
       <div className="mx-auto max-w-5xl">
         <BackButton label={vi ? "Quay lại căn hộ" : "Back to apartment"} />
-        <p className="mt-8 text-xs font-bold tracking-[.18em] text-[#173f34]">
+        <p className="mt-8 text-xs font-bold tracking-[.18em] text-[#304f6e]">
           ABC APARTMENT
         </p>
         <h1 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">
@@ -109,8 +118,15 @@ export function CheckoutConfirmation({
             ? "Vui lòng kiểm tra ngày ở và số tiền đặt cọc trước khi tiếp tục."
             : "Check your stay dates and deposit before continuing."}
         </p>
+        <div className="customer-booking-steps">
+          <span>01 · {vi ? "Chọn căn" : "Choose stay"}</span>
+          <span className="active">
+            02 · {vi ? "Kiểm tra thông tin" : "Review details"}
+          </span>
+          <span>03 · {vi ? "Thanh toán" : "Payment"}</span>
+        </div>
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
-          <section className="overflow-hidden rounded-[28px] border border-black/10 bg-[#fffdf8]">
+          <section className="overflow-hidden rounded-xl border border-black/10 bg-[#ffffff]">
             <div className="grid sm:grid-cols-[220px_1fr]">
               {image && (
                 <div className="relative min-h-52">
@@ -118,7 +134,7 @@ export function CheckoutConfirmation({
                 </div>
               )}
               <div className="p-6">
-                <p className="text-xs font-bold uppercase tracking-wider text-[#a35331]">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#926b4f]">
                   {unit.property.name}
                 </p>
                 <h2 className="mt-2 font-display text-3xl font-semibold">
@@ -144,7 +160,7 @@ export function CheckoutConfirmation({
               />
             </div>
           </section>
-          <aside className="rounded-[28px] border border-black/10 bg-[#fffdf8] p-6">
+          <aside className="rounded-xl border border-black/10 bg-[#ffffff] p-6">
             <h2 className="font-display text-2xl font-semibold">
               {vi ? "Thông tin thanh toán" : "Payment summary"}
             </h2>
@@ -155,11 +171,11 @@ export function CheckoutConfirmation({
               </div>
               <div className="flex justify-between border-t pt-3">
                 <span>{vi ? "Thanh toán VNPay" : "VNPay payment"}</span>
-                <b className="text-[#a35331]">{money(checkout.deposit)}</b>
+                <b className="text-[#926b4f]">{money(checkout.deposit)}</b>
               </div>
             </div>
             {profile && (
-              <div className="mt-6 rounded-2xl bg-[#eef2ed] p-4 text-sm">
+              <div className="mt-6 rounded-2xl bg-[#e9eef4] p-4 text-sm">
                 <b>
                   {profile.lastName} {profile.firstName}
                 </b>
@@ -176,7 +192,7 @@ export function CheckoutConfirmation({
             <button
               onClick={confirm}
               disabled={loading || !profile}
-              className="mt-6 w-full rounded-xl bg-[#173f34] px-5 py-3.5 font-bold text-white transition hover:bg-[#0e3026] disabled:opacity-45"
+              className="mt-6 w-full rounded-xl bg-[#304f6e] px-5 py-3.5 font-bold text-white transition hover:bg-[#0e3026] disabled:opacity-45"
             >
               {loading
                 ? vi
@@ -189,7 +205,7 @@ export function CheckoutConfirmation({
             <button
               type="button"
               onClick={() => router.back()}
-              className="mt-3 w-full py-2 text-sm font-semibold text-muted hover:text-[#14241e]"
+              className="mt-3 w-full py-2 text-sm font-semibold text-muted hover:text-[#26384b]"
             >
               {vi ? "Quay lại chỉnh sửa" : "Go back and edit"}
             </button>
@@ -201,7 +217,7 @@ export function CheckoutConfirmation({
 }
 function Summary({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-[#fffdf8] p-5">
+    <div className="bg-[#ffffff] p-5">
       <p className="text-[10px] font-bold uppercase tracking-wider text-muted">
         {label}
       </p>

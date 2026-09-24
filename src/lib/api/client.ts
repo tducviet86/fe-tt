@@ -16,7 +16,10 @@ export async function apiGet<T extends z.ZodType>(
   const base = process.env.API_URL ?? "http://localhost:3000/api/v1";
   const response = await fetch(`${base}${path}`, {
     ...options,
-    next: { revalidate: 60, ...options?.next },
+    signal: options?.signal ?? AbortSignal.timeout(8000),
+    ...(options?.cache === "no-store"
+      ? {}
+      : { next: { revalidate: 60, ...options?.next } }),
   });
   if (!response.ok)
     throw new ApiError(`API request failed: ${path}`, response.status);
