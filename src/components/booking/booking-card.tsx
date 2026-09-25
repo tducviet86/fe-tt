@@ -152,7 +152,7 @@ export function BookingCard({
           {vi ? "Đặt trực tiếp" : "Book direct"}
         </p>
         <span className="rounded-full bg-[#e9eef4] px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-[#304f6e]">
-          {vi ? "Giá tốt nhất" : "Best rate"}
+          {vi ? "Giá cơ bản" : "Base rate"}
         </span>
       </div>
       <p className="mt-4">

@@ -195,3 +195,5 @@
     width: calc(100% - 36px);
   }
 }
+
+.customer-site a.bg-forest { color: #fff; }
